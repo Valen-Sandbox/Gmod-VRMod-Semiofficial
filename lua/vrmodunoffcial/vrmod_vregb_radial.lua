@@ -71,18 +71,18 @@ function VREgb_radialOpen()
 
 
     -- Menu code ends here
-	
-	
-	
+
+
+
 	local ply = LocalPlayer()
-	
+
 	local renderCount = 0
-	
+
 	local tmp = Angle(0,g_VR.tracking.hmd.ang.yaw-90,45) --Forward() = right, Right() = back, Up() = up (relative to panel, panel forward is looking at top of panel from middle of panel, up is normal)
     local pos, ang = WorldToLocal( g_VR.tracking.pose_righthand.pos + tmp:Forward()*-9 + tmp:Right()*-11 + tmp:Up()*-7, tmp, g_VR.origin, g_VR.originAngle)
     local mode = 4
     --uid, width, height, panel, attachment, pos, ang, scale, cursorEnabled, closeFunc
-    
+
     if vre_menuguiattachment:GetInt("vre_ui_attachtohand") == 1 then
         pos, ang = Vector(4,6,5), Angle(0,-90,10)
         mode = 1
@@ -98,7 +98,7 @@ function VREgb_radialOpen()
          LocalPlayer():ConCommand(closeconvar:GetString())
 		 open = false
 	end)
-	
+
     hook.Add("PreRender","vre_rendergb_radialmenu",function()
         if VRUtilIsMenuOpen("miscmenu") or VRUtilIsMenuOpen("vremenu") then
             VRUtilMenuClose("vremenu_gb_radial")
@@ -110,7 +110,7 @@ function VREgb_radialOpen()
             VRUtilMenuRenderPanel("vremenu_gb_radial")
         end
 	end)
-	
+
 end
 concommand.Add( "vre_gb-radial", function( ply, cmd, args )
     if g_VR.net[ply:SteamID()] then

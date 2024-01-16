@@ -204,7 +204,7 @@ hook.Add(
 
         vrmod.RemoveInGameMenuItem("ArcCW Customize")
 
-    
+
     end
 )
 

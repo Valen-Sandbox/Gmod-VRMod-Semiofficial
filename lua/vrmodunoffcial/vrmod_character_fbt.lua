@@ -1,9 +1,9 @@
 if SERVER then
 	util.AddNetworkString("vrmod_fbt_cal")
 	util.AddNetworkString("vrmod_fbt_toggle")
-	
+
 	local caldata = {}
-	
+
 	net.Receive( "vrmod_fbt_cal", function( len, ply )
 		local requestedPly = net.ReadBool() and net.ReadEntity() or nil
 		local steamid = requestedPly and requestedPly:SteamID() or ply:SteamID()
@@ -35,14 +35,14 @@ if SERVER then
 			net.SendOmit( omittedPlayers )
 		end
 	end)
-	
+
 	vrmod.NetReceiveLimited( "vrmod_fbt_toggle",10,1, function( len, ply )
 		net.Start( "vrmod_fbt_toggle" )
 		net.WriteEntity( ply )
 		net.WriteBool( net.ReadBool() )
 		net.Broadcast()
 	end)
-	
+
 	return
 end
 
@@ -57,10 +57,10 @@ local function Init( ply )
 	characterInfo[steamid] = info
 	local pmname = ply.vrmod_pm or ply:GetModel()
 	if info.modelName == pmname then return end
-	
+
 	local tmpPlayerModel = ClientsideModel(pmname)
 	tmpPlayerModel:SetupBones()
-	
+
 	local boneids = {
 		leftClavicle		= tmpPlayerModel:LookupBone("ValveBiped.Bip01_L_Clavicle") or -1,
 		leftUpperArm	= tmpPlayerModel:LookupBone("ValveBiped.Bip01_L_UpperArm") or -1,
@@ -89,7 +89,7 @@ local function Init( ply )
 		pelvis		= tmpPlayerModel:LookupBone("ValveBiped.Bip01_Pelvis") or -1,
 	}
 	info.boneids = boneids
-	
+
 	local fingerboneids = {
 		tmpPlayerModel:LookupBone("ValveBiped.Bip01_L_Finger0") or -1,
 		tmpPlayerModel:LookupBone("ValveBiped.Bip01_L_Finger01") or -1,
@@ -123,7 +123,7 @@ local function Init( ply )
 		tmpPlayerModel:LookupBone("ValveBiped.Bip01_R_Finger42") or -1,
 	}
 	info.fingerboneids = fingerboneids
-	
+
 
 	g_VR.errorText = (ply == LocalPlayer()) and "" or g_VR.errorText
 	for k,v in pairs(boneids) do
@@ -136,9 +136,9 @@ local function Init( ply )
 		end
 	end
 
-	
+
 	info.modelName = pmname
-	
+
 	local boneinfo = {}
 	info.boneinfo = boneinfo
 	local boneCount = tmpPlayerModel:GetBoneCount()
@@ -159,17 +159,17 @@ local function Init( ply )
 			targetMatrix = mtx
 		}
 	end
-	
+
 	info.upperLegLen	= ( tmpPlayerModel:GetBoneMatrix(boneids.leftCalf):GetTranslation() - tmpPlayerModel:GetBoneMatrix(boneids.leftThigh):GetTranslation() ):Length()
 	info.lowerLegLen	= ( tmpPlayerModel:GetBoneMatrix(boneids.leftFoot):GetTranslation() - tmpPlayerModel:GetBoneMatrix(boneids.leftCalf):GetTranslation() ):Length()
 	info.clavicleLen		= ( tmpPlayerModel:GetBoneMatrix(boneids.leftUpperArm):GetTranslation() - tmpPlayerModel:GetBoneMatrix(boneids.leftClavicle):GetTranslation() ):Length()
 	info.upperArmLen	= ( tmpPlayerModel:GetBoneMatrix(boneids.leftForearm):GetTranslation() - tmpPlayerModel:GetBoneMatrix(boneids.leftUpperArm):GetTranslation() ):Length()
 	info.lowerArmLen	= ( tmpPlayerModel:GetBoneMatrix(boneids.leftHand):GetTranslation() - tmpPlayerModel:GetBoneMatrix(boneids.leftForearm):GetTranslation() ):Length()
-	
+
 	_, info.defaultToNeutralClavicleAng = WorldToLocal(zeroVec,Angle(0,90,90),zeroVec,tmpPlayerModel:GetBoneMatrix(boneids.leftClavicle):GetAngles())
 	info.defaultLeftFootAngles = tmpPlayerModel:GetBoneMatrix(boneids.leftFoot):GetAngles()
 	info.defaultRightFootAngles = tmpPlayerModel:GetBoneMatrix(boneids.rightFoot):GetAngles()
-	
+
 	--todo: 3d lut or something better
 	local degToBendRightAmount = {} --indices 1 to 182 represent degrees -90 to 90
 	info.degToBendRightAmount = degToBendRightAmount
@@ -177,7 +177,7 @@ local function Init( ply )
 	info.degToBendForwardAmount = degToBendForwardAmount
 	local tmp = { forward = {}, right = {} }
 	local tmpboneids = {boneids.pelvis, boneids.spine, boneids.spine1, boneids.spine2, boneids.spine4, boneids.neck, boneids.head}
-	for i = 1,402 do 
+	for i = 1,402 do
 		local bendForwardAmount = (i>201) and (i-302)*0.4 or 0
 		local bendRightAmount = (i<=201) and (i-101)*0.4 or 0
 		boneinfo[boneids.spine].offsetAng = Angle( -bendForwardAmount, bendRightAmount, 0)
@@ -212,7 +212,7 @@ local function Init( ply )
 			end
 		end
 	end
-	
+
 	tmpPlayerModel:Remove()
 	--ply:SetLOD(0)
 end
@@ -228,7 +228,7 @@ local function CalculateBonePositions( ply )
 	local frame = g_VR.net[steamid].lerpedFrame
 	if info.frameNumber == FrameNumber() or not frame then return end
 	info.frameNumber = FrameNumber()
-	
+
 	--get shortcuts to inputs for the algorithm
 	local pelvisTargetPos,		pelvisTargetAng			= LocalToWorld( info.waistCalibrationPos, info.waistCalibrationAng, frame.waistPos, frame.waistAng )
 	local headTargetPos,		headTargetAng			= LocalToWorld( info.headCalibrationPos, info.headCalibrationAng, frame.hmdPos, frame.hmdAng )
@@ -250,10 +250,10 @@ local function CalculateBonePositions( ply )
 	local boneCount				= info.boneCount
 	local boneids				= info.boneids
 	local fingerboneids			= info.fingerboneids
-	
+
 	--override pelvis pose
 	boneinfo[boneids.pelvis].overridePos, boneinfo[boneids.pelvis].overrideAng = LocalToWorld( zeroVec, Angle(0,90,90), pelvisTargetPos, pelvisTargetAng )
-		
+
 	--add spine rotation, todo: roll
 	local headVecRelative = WorldToLocal( headTargetPos, headTargetAng, pelvisTargetPos, pelvisTargetAng ):GetNormalized()
 	local bendForwardAmount = GetSpineBend( degToBendForwardAmount, 90-math.deg(math.acos(headVecRelative:Dot(Vector(1,0,0)))) )
@@ -263,32 +263,32 @@ local function CalculateBonePositions( ply )
 	boneinfo[boneids.spine2].offsetAng = Angle( bendRightAmount, bendForwardAmount, 0)
 	boneinfo[boneids.spine4].offsetAng = Angle( bendRightAmount, bendForwardAmount, 0)
 	boneinfo[boneids.neck].offsetAng = Angle( bendRightAmount, bendForwardAmount, 0)
-		
+
 	--override left and right foot angles
 	_,boneinfo[boneids.leftFoot].overrideAng = LocalToWorld( zeroVec, defaultLeftFootAngles, zeroVec, leftFootTargetAng )
 	_,boneinfo[boneids.rightFoot].overrideAng = LocalToWorld( zeroVec, defaultRightFootAngles, zeroVec, rightFootTargetAng )
-		
+
 	--override left and right hand angles
 	boneinfo[boneids.leftHand].overrideAng = leftHandTargetAng
 	boneinfo[boneids.rightHand].overrideAng = rightHandTargetAng + Angle(0,0,180)
-		
+
 	--override head angles
 	_,boneinfo[boneids.head].overrideAng = LocalToWorld( zeroVec, Angle(-80,0,90), zeroVec, headTargetAng )
-		
+
 	--set finger offset angles
 	local frame = g_VR.net[steamid].lerpedFrame
 	for k,v in pairs(fingerboneids) do
 		if not boneinfo[v] then continue end
 		boneinfo[v].offsetAng = LerpAngle(frame["finger"..math.floor((k-1)/3+1)], g_VR.openHandAngles[k], g_VR.closedHandAngles[k])
 	end
-		
+
 	--calculate target matrices (and rest of the overrides along the way as the required base positions become known)
 	local upperBodyAng
 	for i = 0,boneCount-1 do
 		local info = boneinfo[i]
 		local parentInfo = boneinfo[info.parent] or info
 		local	wpos, wang = LocalToWorld(info.relativePos, info.relativeAng + info.offsetAng, parentInfo.pos, parentInfo.ang)
-			
+
 		--left thigh pose is known
 		if i == boneids.leftThigh then
 			local targetVec = (leftFootTargetPos-wpos):GetNormalized()
@@ -315,7 +315,7 @@ local function CalculateBonePositions( ply )
 			end
 			boneinfo[boneids.leftCalf].overrideAng = tmp
 		end
-			
+
 		--right thigh pose is known
 		if i == boneids.rightThigh then
 			local targetVec = (rightFootTargetPos-wpos):GetNormalized()
@@ -342,7 +342,7 @@ local function CalculateBonePositions( ply )
 			end
 			boneinfo[boneids.rightCalf].overrideAng = tmp
 		end
-			
+
 		--left clavicle pose is known
 		if i == boneids.leftClavicle then
 			local _, neutralClavicleAng = LocalToWorld( zeroVec, defaultToNeutralClavicleAng, wpos, wang )
@@ -355,7 +355,7 @@ local function CalculateBonePositions( ply )
 				_,upperBodyAng = LocalToWorld( zeroVec, Angle(-90,0,-90), zeroVec, neutralClavicleAng)
 			end
 		end
-			
+
 		--right clavicle pose is known
 		if i == boneids.rightClavicle then
 			local _, neutralClavicleAng = LocalToWorld( zeroVec, defaultToNeutralClavicleAng, wpos, wang )
@@ -368,7 +368,7 @@ local function CalculateBonePositions( ply )
 				_,upperBodyAng = LocalToWorld( zeroVec, Angle(90,0,-90), zeroVec, neutralClavicleAng)
 			end
 		end
-			
+
 		--left upperarm pose is known
 		if i == boneids.leftUpperArm then
 			--upperarm
@@ -405,7 +405,7 @@ local function CalculateBonePositions( ply )
 				boneinfo[boneids.leftUlna].overrideAng = LerpAngle( 0.5, newForearmAng, newWristAng )
 			end
 		end
-			
+
 		--right upperarm pose is known
 		if i == boneids.rightUpperArm then
 			--upperarm
@@ -452,7 +452,7 @@ local function CalculateBonePositions( ply )
 		info.pos = wpos
 		info.ang = wang
 	end
-	
+
 end
 
 local function Calibrate()
@@ -554,7 +554,7 @@ local function Stop( ply )
 		ply:ManipulateBoneScale( info.boneids.head, Vector(1,1,1) )
 	end
 end
-	
+
 
 hook.Add("VRMod_OpenQuickMenu", "fbtcal", function()
 	vrmod.RemoveInGameMenuItem("Calibrate Full-body Tracking")
@@ -577,7 +577,7 @@ net.Receive( "vrmod_fbt_cal", function()
 	g_VR.StopCharacterSystem( steamid )
 	Start( ply )
 end)
-	
+
 net.Receive( "vrmod_fbt_toggle", function()
 	local ply = net.ReadEntity()
 	if not IsValid(ply) then return end
@@ -591,7 +591,7 @@ net.Receive( "vrmod_fbt_toggle", function()
 end)
 
 --hook.Add("VRMod_Start","vrmod_fbtstart",function(ply)
-	
+
 --end)
 
 hook.Add("VRMod_Exit","vrmod_fbtstop",function(ply, steamid)

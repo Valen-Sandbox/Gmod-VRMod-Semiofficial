@@ -20,7 +20,7 @@ local frame = nil
 local function OpenMenu()
 
 	-- if vrautogunsetting:GetBool() then
-	-- 	LocalPlayer():ConCommand("vrmod_normalgunsetting")	
+	-- 	LocalPlayer():ConCommand("vrmod_normalgunsetting")
 	-- end
 
 
@@ -48,12 +48,12 @@ local function OpenMenu()
 		LocalPlayer():ConCommand("arc9_fx_rtblur 0")
 		LocalPlayer():ConCommand("arc9_fx_adsblur 0")
 		LocalPlayer():ConCommand("arc9_fx_reloadblur 0")
-		LocalPlayer():ConCommand("arc9_fx_animblur 0")	
+		LocalPlayer():ConCommand("arc9_fx_animblur 0")
 	else
 		LocalPlayer():ConCommand("arc9_dev_benchgun 0")
 		LocalPlayer():ConCommand("arccw_dev_benchgun 0")
 		LocalPlayer():ConCommand("arc9_tpik 1")
-	
+
 	end
 
 
@@ -66,7 +66,7 @@ local function OpenMenu()
 	end
 
 
-	
+
 	if IsValid(frame) then return frame end
 	frame = vgui.Create("DFrame")
 	frame:SetSize(400, 485)
@@ -251,7 +251,7 @@ hook.Add(
 	end
 )
 
---DButton end		
+--DButton end
 vrmod.AddInGameMenuItem(
 	"Settings",
 	4,

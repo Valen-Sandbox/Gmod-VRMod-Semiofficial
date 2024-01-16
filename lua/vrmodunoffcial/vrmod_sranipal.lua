@@ -7,8 +7,8 @@
 -- 	local vrScrH = CreateClientConVar("vrmod_ScrH",ScrH(),true,FCVAR_ARCHIVE)
 -- 	local vrScrW = CreateClientConVar("vrmod_ScrW",ScrW(),true,FCVAR_ARCHIVE)
 
-	
-	
+
+
 -- 	net.Receive( "vrmod_flexsetup", function( len, ply )
 -- 		local ply = net.ReadEntity()
 -- 		if not IsValid(ply) then return end
@@ -48,7 +48,7 @@
 -- 			end
 -- 		end)
 -- 	end)
-	
+
 -- 	net.Receive( "vrmod_flexdata", function( len, ply )
 -- 		local ply = net.ReadEntity()
 -- 		if not ply.vrmod_flexsetup then return end
@@ -59,15 +59,15 @@
 -- 			ply.vrmod_flexsetup.weights[i] = net.ReadUInt(16) / 65535
 -- 		end
 -- 	end)
-	
+
 -- 	hook.Add("VRMod_Menu","vrmod_n_sranipal",function(frame)
 -- 		if VRMOD_SRanipalInit == nil then return end
 -- 		frame.SettingsForm:CheckBox("Enable SRanipal", "vrmod_use_sranipal")
 -- 		frame.SettingsForm:ControlHelp("For Vive Pro Eye / Vive Facial Tracker")
 -- 	end)
-			
+
 -- 	hook.Add("VRMod_Start","sranipal",function(ply)
--- 		if ply ~= LocalPlayer() then 
+-- 		if ply ~= LocalPlayer() then
 -- 			net.Start("vrmod_requestflexsetup")
 -- 			net.WriteEntity(ply)
 -- 			net.SendToServer()
@@ -148,14 +148,14 @@
 -- 		end
 -- 		--
 -- 		vrmod.AddInGameMenuItem("Flexbinder", 0, 1, function()
-			
+
 -- 			local ang = Angle(0,g_VR.tracking.hmd.ang.yaw-90,45)
 -- 			local pos, ang = WorldToLocal( g_VR.tracking.hmd.pos + Vector(0,0,-20) + Angle(0,g_VR.tracking.hmd.ang.yaw,0):Forward()*30 + ang:Forward()*vrScrW:GetInt()*-0.02 + ang:Right()*vrScrH:GetInt()*-0.02, ang, g_VR.origin, g_VR.originAngle)
 
 -- 			VRUtilMenuOpen("flexbinder", vrScrW:GetInt(), vrScrH:GetInt(), nil, 4, pos, ang, 0.04, true, function()
 -- 				hook.Remove("PreRender","flexbinder")
 -- 			end)
-			
+
 -- 			local blacklist = {
 -- 				["gaze_origin_mm"] = true,
 -- 				["gaze_direction"] = true,
@@ -353,9 +353,9 @@
 -- 					surface.DrawOutlinedRect(30,text_y+18*(selectedInput-1),300,19)
 -- 				end
 -- 				for k,v in ipairs(inputs) do
--- 					surface.SetTextPos( text_x, text_y ) 
+-- 					surface.SetTextPos( text_x, text_y )
 -- 					surface.DrawText( v[1] )
--- 					surface.SetTextPos( text_x + 250, text_y ) 
+-- 					surface.SetTextPos( text_x + 250, text_y )
 -- 					surface.DrawText( tostring(math.Round(dataTables[v[3]][v[2]],3)) )
 -- 					text_y = text_y + 18
 -- 				end
@@ -377,9 +377,9 @@
 -- 					surface.DrawOutlinedRect(1036,text_y+18*(selectedOutput-1),300,19)
 -- 				end
 -- 				for i = 1,#outputs do
--- 					surface.SetTextPos( text_x, text_y ) 
+-- 					surface.SetTextPos( text_x, text_y )
 -- 					surface.DrawText( outputs[i][1] )
--- 					surface.SetTextPos( text_x + 250, text_y ) 
+-- 					surface.SetTextPos( text_x + 250, text_y )
 -- 					surface.DrawText( tostring(math.Round(ply:GetFlexWeight(outputs[i][2]),3)) )
 -- 					text_y = text_y + 18
 -- 				end
@@ -408,27 +408,27 @@
 -- 					surface.DrawRect(383,284,600,100)
 -- 					surface.SetDrawColor( 200, 200, 200, 255 )
 -- 					--if selectedConnection > 0 then
--- 						surface.SetTextPos( 388, 289 ) 
+-- 						surface.SetTextPos( 388, 289 )
 -- 						surface.DrawText( "Multiply" )
--- 						surface.SetTextPos( 920, 289 ) 
+-- 						surface.SetTextPos( 920, 289 )
 -- 						surface.DrawText( tostring(math.Round(mul,2)) )
 -- 						surface.DrawRect(460,295,450,4)
 -- 						surface.DrawRect(460+((mul+1)/2)*450,290,4,14)
--- 						surface.SetTextPos( 388, 289+18 ) 
+-- 						surface.SetTextPos( 388, 289+18 )
 -- 						surface.DrawText( "Add" )
--- 						surface.SetTextPos( 920, 289+18 ) 
+-- 						surface.SetTextPos( 920, 289+18 )
 -- 						surface.DrawText( tostring(math.Round(add,2)) )
 -- 						surface.DrawRect(460,295+18,450,4)
 -- 						surface.DrawRect(460+((add+1)/2)*450,290+18,4,14)
 -- 					--end
--- 					surface.SetTextPos( 388, 289+18*2 ) 
+-- 					surface.SetTextPos( 388, 289+18*2 )
 -- 					surface.DrawText( "Test" )
--- 					surface.SetTextPos( 920, 289+18*2 ) 
+-- 					surface.SetTextPos( 920, 289+18*2 )
 -- 					surface.DrawText( tostring(math.Round(test,2)) )
 -- 					surface.DrawRect(460,295+18*2,450,4)
 -- 					surface.DrawRect(460+test/1*450,290+18*2,4,14)
-					
--- 					surface.SetTextPos( 780, 350 ) 
+
+-- 					surface.SetTextPos( 780, 350 )
 -- 					surface.DrawText( "Connect / Disconnect" )
 -- 					surface.DrawOutlinedRect(770,347,190,25)
 -- 				end
@@ -440,31 +440,31 @@
 -- 				render.OverrideBlend(false)
 -- 				surface.SetDrawColor( 255, 255, 255, 255 )
 -- 				surface.DrawOutlinedRect( 1000, 5, 30, 30 )
--- 				surface.SetTextPos( 1010, 10 ) 
+-- 				surface.SetTextPos( 1010, 10 )
 -- 				surface.DrawText( "-      Scale: "..flexScale )
 -- 				surface.DrawOutlinedRect( 1121, 5, 30, 30 )
--- 				surface.SetTextPos( 1130, 10 ) 
+-- 				surface.SetTextPos( 1130, 10 )
 -- 				surface.DrawText( "+" )
--- 				surface.SetTextPos( 5, 10 ) 
+-- 				surface.SetTextPos( 5, 10 )
 -- 				surface.DrawText( "lip_error: "..tostring(lip_error)..", eye_error: "..tostring(eye_error) )
--- 				surface.SetTextPos( 500, 10 ) 
+-- 				surface.SetTextPos( 500, 10 )
 -- 				surface.DrawText( "File: "..filename..(fileChanges and "*" or "") )
 -- 				surface.DrawOutlinedRect( 1156, 5, 100, 30 )
--- 				surface.SetTextPos( 1185, 10 ) 
+-- 				surface.SetTextPos( 1185, 10 )
 -- 				surface.DrawText( "Clear" )
 -- 				surface.DrawOutlinedRect( 1261, 5, 100, 30 )
--- 				surface.SetTextPos( 1290, 10 ) 
+-- 				surface.SetTextPos( 1290, 10 )
 -- 				surface.DrawText( "Save" )
 -- 				VRUtilMenuRenderEnd()
 -- 			end)
-			
+
 -- 			hook.Add("VRMod_OpenQuickMenu","flexbinder",function()
 -- 				hook.Remove("VRMod_OpenQuickMenu","flexbinder")
 -- 				VRUtilMenuClose("flexbinder")
 -- 				return false
 -- 			end)
 -- 		end)
-	
+
 -- 	end)
 
 -- 	hook.Add("VRMod_Exit","sranipal",function(ply,steamid)
@@ -491,7 +491,7 @@
 -- 	util.AddNetworkString("vrmod_requestflexsetup")
 -- 	util.AddNetworkString("vrmod_flexsetup")
 -- 	util.AddNetworkString("vrmod_flexdata")
-	
+
 -- 	local function sendFlexSetup(ply, recipient)
 -- 		if ply.vrmod_flexsetup == nil then return end
 -- 		net.Start("vrmod_flexsetup")
@@ -509,11 +509,11 @@
 -- 			net.Broadcast()
 -- 		end
 -- 	end
-	
+
 -- 	vrmod.NetReceiveLimited( "vrmod_requestflexsetup",10,32, function( len, ply )
 -- 		sendFlexSetup(net.ReadEntity(), ply)
 -- 	end)
-	
+
 -- 	vrmod.NetReceiveLimited( "vrmod_flexsetup",10,1024, function( len, ply )
 -- 		ply.vrmod_flexsetup = {
 -- 			scale = net.ReadUInt(4),
@@ -532,7 +532,7 @@
 -- 		end
 -- 		sendFlexSetup(ply, nil)
 -- 	end)
-	
+
 -- 	vrmod.NetReceiveLimited( "vrmod_flexdata",1/engine.TickInterval()+5,1024, function( len, ply )
 -- 		if not ply.vrmod_flexsetup then return end
 -- 		net.Start("vrmod_flexdata")

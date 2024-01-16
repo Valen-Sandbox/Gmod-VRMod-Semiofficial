@@ -122,8 +122,8 @@ hook.Add(
 		end
 
 		FPS_defaultbutton.DoRightClick = function()
-			RunConsoleCommand("vrmod_gmod_optimization_reset")		
-		
+			RunConsoleCommand("vrmod_gmod_optimization_reset")
+
 		end
 		--DButton end
 
@@ -379,7 +379,7 @@ hook.Add(
 		vrmod_ui_outline:SizeToContents() -- Make its size the same as the contents
 		--DCheckBoxLabel end
 
-		
+
 		--DButton Start
 		--character_restart
 		local UI_defaultbutton = vgui.Create("DButton", Panel1) -- Create the button and parent it to the frame
@@ -545,7 +545,7 @@ hook.Add(
 		characterEyeHeight.OnValueChanged = function(self, value)
 		end
 
-		--DNumSlider end				
+		--DNumSlider end
 		--DNumSlider Start
 		--crouchthreshold
 		local crouchthreshold = vgui.Create("DNumSlider", Panel3)
@@ -558,7 +558,7 @@ hook.Add(
 		crouchthreshold:SetConVar("vrmod_crouchthreshold") -- Changes the ConVar when you slide
 		-- If not using convars, you can use this hook + Panel.SetValue()
 		crouchthreshold.OnValueChanged = function(self, value) end
-		--DNumSlider end				
+		--DNumSlider end
 		--DNumSlider Start
 		--characterHeadToHmdDist
 		local characterHeadToHmdDist = vgui.Create("DNumSlider", Panel3)
@@ -609,11 +609,11 @@ hook.Add(
 		character_auto:SetSize(160, 30) -- Set the size
 		-- A custom function run when clicked ( note the . instead of : )
 		character_auto.DoClick = function()
-			RunConsoleCommand("vrmod_character_auto") -- Run the console command "say hi" when you click it ( command, args )							
+			RunConsoleCommand("vrmod_character_auto") -- Run the console command "say hi" when you click it ( command, args )
 			timer.Simple(
 				2,
 				function()
-					RunConsoleCommand("vrmod_scale_auto") -- Run the console command "say hi" when you click it ( command, args )					
+					RunConsoleCommand("vrmod_scale_auto") -- Run the console command "say hi" when you click it ( command, args )
 				end
 			)
 
@@ -626,7 +626,7 @@ hook.Add(
 		end
 
 		character_auto.DoRightClick = function()
-			RunConsoleCommand("vrmod_character_auto") -- Run the console command "say hi" when you click it ( command, args )		
+			RunConsoleCommand("vrmod_character_auto") -- Run the console command "say hi" when you click it ( command, args )
 		end
 
 		--DButton end
@@ -673,7 +673,7 @@ hook.Add(
 		--scale
 		local scale = vgui.Create("DLabel", Panel2)
 		scale:SetPos(20, 5) -- Set the position (X,Y)
-		scale:SetText("scale") -- Set the text above the slider					
+		scale:SetText("scale") -- Set the text above the slider
 		-- If not using convars, you can use this hook + Panel.SetValue()
 		--DNumSlider end
 		--DButton Start
@@ -969,9 +969,9 @@ hook.Add(
 		-- If not using convars, you can use this hook + Panel.SetValue()
 		cameraoverride.OnValueChanged = function(self, value) end -- Called when the slider value changes
 		--DNumSlider end
-		-- Panel8 "TAB8" End	
+		-- Panel8 "TAB8" End
 
-		
+
 		--Panel9 "TAB9" Start
 		local Panel9 = vgui.Create("DPanel", sheet)
 		sheet:AddSheet("GameRebootRequied", Panel9, "icon16/computer_edit.png")

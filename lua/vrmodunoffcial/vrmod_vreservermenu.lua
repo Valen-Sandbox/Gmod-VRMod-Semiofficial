@@ -59,7 +59,7 @@ function vre_svmenuOpen()
     backbutton.DoClick = function()
             VRUtilMenuClose("vre_svmenu")
 
-		
+
     end
 
 
@@ -71,8 +71,8 @@ function vre_svmenuOpen()
 
 	-- Activate bothmode to be able to press buttons even when using a vehicle.
 	LocalPlayer():ConCommand("vrmod_keymode_both")
-	
-	
+
+
 
 
 --button toggle start
@@ -179,7 +179,7 @@ function vre_svmenuOpen()
 			end
 --button toggle end
 		end
-		
+
 		if not !GetConVar("vrgrab_gravitygloves") then
 --2button toggle start
 			local button5 = vgui.Create("DButton")
@@ -242,7 +242,7 @@ end
 			end
 		--button toggle end
 		end
-		
+
 
 
 
@@ -267,14 +267,14 @@ if not !GetConVar("arcticvr_gunmelee_client") then
 					end
 				--command end
 				end
-	
+
 				function button8:Paint(w, h)
 					button8:SetText("ArcVR_melee: "..GetConVar("arcticvr_gunmelee_client"):GetFloat())
 					draw.RoundedBox(8, 0, 0, w, h, BUTTON_2TIER[button8on+1])
 				end
 	--button toggle end
 			end
-	
+
 
 -- --2button toggle start
 
@@ -344,7 +344,7 @@ if not !GetConVar("arcticvr_gunmelee_client") then
 -- --2button toggle end
 
 
- 
+
 -- --2button toggle start
 
 			-- local button(valuehere) = vgui.Create("DButton")
@@ -388,17 +388,17 @@ if not !GetConVar("arcticvr_gunmelee_client") then
 
 
 
-	
-	
+
+
 	local ply = LocalPlayer()
-	
+
 	local renderCount = 0
-	
+
 	local tmp = Angle(0,g_VR.tracking.hmd.ang.yaw-90,60) --Forward() = right, Right() = back, Up() = up (relative to panel, panel forward is looking at top of panel from middle of panel, up is normal)
     local pos, ang = WorldToLocal( g_VR.tracking.pose_righthand.pos + tmp:Forward()*-9 + tmp:Right()*-11 + tmp:Up()*-7, tmp, g_VR.origin, g_VR.originAngle)
     local mode = 4
     --uid, width, height, panel, attachment, pos, ang, scale, cursorEnabled, closeFunc
-    
+
     if vre_menuguiattachment:GetInt("vre_ui_attachtohand") == 1 then
         pos, ang = Vector(4,6,5.5), Angle(0,-90,10)  --Forward(), Right(), Up() --Vector(10,6,13), Angle(0,-90,50)
         mode = 1
@@ -411,13 +411,13 @@ if not !GetConVar("arcticvr_gunmelee_client") then
         vre_svmenuPanel:Remove()
         vre_svmenuPanel = nil
          hook.Remove("PreRender","vre_renderaddvrmenu")
-			
+
 		 open = false
 	end)
-	
+
     hook.Add("PreRender","vre_renderaddvrmenumenu",function()
         if VRUtilIsMenuOpen("miscmenu") or VRUtilIsMenuOpen("vremenu") then
-	
+
 
             VRUtilMenuClose("vre_svmenu")
         elseif IsValid(vre_svmenuPanel) then
@@ -428,7 +428,7 @@ if not !GetConVar("arcticvr_gunmelee_client") then
             VRUtilMenuRenderPanel("vre_svmenu")
         end
 	end)
-	
+
 end
 
 	concommand.Add( "vre_svmenu", function( ply, cmd, args )

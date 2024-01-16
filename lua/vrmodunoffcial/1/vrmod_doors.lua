@@ -6,7 +6,7 @@ if CLIENT then
 		definedGrabPoints[class] = definedGrabPoints[class] or {}
 		definedGrabPoints[class][uid] = {map=map, model=model, bodygroup_id=bodygroup_id, bodygroup_value=bodygroup_value, bone=bone, pos=pos, angles={ang_left_hand,ang_right_hand}}
 	end
-	
+
 	vrmod.AddUseGrabPoint("default1", nil, "prop_door_rotating", "models/props_c17/door01_left.mdl", 1, 1, 1, Vector(-3,1,-9), Angle(-90,0,0), Angle(-90,0,180))
 	vrmod.AddUseGrabPoint("default2", nil, "prop_door_rotating", "models/props_c17/door01_left.mdl", 1, 1, 1, Vector(-3,1,7), Angle(90,0,0),Angle(90,0,180))
 	vrmod.AddUseGrabPoint("default3", nil, "prop_door_rotating", "models/props_c17/door02_double.mdl", 1, 1, 1, Vector(-3,1,-9), Angle(-90,0,0), Angle(-90,0,180))
@@ -22,8 +22,8 @@ if CLIENT then
 	vrmod.AddUseGrabPoint("default13", "d1_trainstation_01", "func_door_rotating", "*21", 1, nil, nil, Vector(-6,9,3),Angle(0,15,0),Angle(0,15,0))
 	vrmod.AddUseGrabPoint("default14", "d1_trainstation_01", "func_door_rotating", "*19", 1, nil, nil, Vector(-3,12,3),Angle(), Angle())
 	vrmod.AddUseGrabPoint("default15", "d1_trainstation_01", "func_door_rotating", "*18", 1, nil, nil, Vector(-3,10,3),Angle(), Angle())
-	
-	
+
+
 	local hands = {
 		{
 			poseName = "pose_lefthand",
@@ -36,12 +36,12 @@ if CLIENT then
 			getFunc = vrmod.GetRightHandPose,
 		},
 	}
-	
+
 	local actionHand = {
 		["boolean_left_pickup"] = hands[1],
 		["boolean_right_pickup"] = hands[2]
 	}
-		
+
 	local function releaseHand(hand)
 		if hand.grabbing then
 			hand.grabbing = false
@@ -49,7 +49,7 @@ if CLIENT then
 			hand.lerpStartPos, hand.lerpStartAng = hand.getFunc()
 		end
 	end
-	
+
 	local doors = {}
 	local invalidDoors = {}
 	hook.Add("OnEntityCreated","vrmod_doors",function(ent)
@@ -60,7 +60,7 @@ if CLIENT then
 				local t = { ent = ent, pos = ent:GetPos(), grabPoints = {}}
 				for k,v in pairs( potentialGrabPoints ) do
 					if (not v.map or game.GetMap() == v.map) and ent:GetModel() == v.model and ent:GetBodygroup(v.bodygroup_id) == v.bodygroup_value then
-						t.grabPoints[#t.grabPoints+1] = v 
+						t.grabPoints[#t.grabPoints+1] = v
 					end
 				end
 				if #t.grabPoints > 0 then
@@ -160,22 +160,22 @@ if CLIENT then
 			end
 		end)
 	end
-	
+
 	local function cleanup()
 		hook.Remove("VRMod_Input","doors")
 		hook.Remove("VRMod_PreRender","doors")
 		hook.Remove("VRMod_AllowDefaultAction","doors")
 	end
-	
+
 	local _, convarValues = vrmod.AddCallbackedConvar("vrmod_doors","vrmod_doors","1", FCVAR_ARCHIVE, "",nil,nil, tobool, function(val)
 		if val and g_VR.active then init() else cleanup() end
 	end)
-	
+
 	hook.Add("VRMod_Start","doors",function(ply)
 		if ply ~= LocalPlayer() or not convarValues.vrmod_doors then return end
 		init()
 	end)
-	
+
 	hook.Add("VRMod_Exit","doors",function(ply)
 		if ply ~= LocalPlayer() then return end
 		cleanup()
@@ -207,12 +207,12 @@ if CLIENT then
 
 elseif SERVER then
 	util.AddNetworkString("vrmod_doors")
-	
+
 	vrmod.NetReceiveLimited("vrmod_doors", 5, 32, function(len, ply)
 		local ent = net.ReadEntity()
 		if hook.Run("PlayerUse", ply, ent) ~= false then
 			ent:Use(ply)
 		end
 	end)
-	
+
 end

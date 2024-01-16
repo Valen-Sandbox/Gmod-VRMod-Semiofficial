@@ -21,7 +21,7 @@ concommand.Add( "vrmod_actioneditor", function( ply, cmd, args )
 	window:SetSize( 700, 512 )
 	window:SetTitle("VRMod Custom Input Action Editor")
 	window:MakePopup()
-	
+
 	local DLabel = vgui.Create( "DLabel",window )
 	DLabel:SetText( "name                    [driving]    concmd on press                                                   concmd on release" )
 	DLabel:SetPos(15,31)
@@ -123,13 +123,13 @@ concommand.Add( "vrmod_actioneditor", function( ply, cmd, args )
 				UpdateList(DScrollPanel:GetVBar():GetScroll())
 			end
 		end
-	
+
 		timer.Simple(0,function()
 			if IsValid(DScrollPanel) then
 				DScrollPanel:GetVBar():SetScroll(scrollTo)
 			end
 		end)
-	
+
 	end
 
 	local DButton = vgui.Create( "DButton",window )

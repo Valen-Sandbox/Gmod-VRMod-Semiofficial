@@ -658,7 +658,7 @@ if CLIENT then
 							end
 							--lefthand-Type2(RhandSimurate) end
 						else
-							--lefthand-type1(Bip01_L_hand Posirion) start						
+							--lefthand-type1(Bip01_L_hand Posirion) start
 							local netFrame = VRUtilNetUpdateLocalPly()
 							--update viewmodel position
 							if g_VR.currentvmi then

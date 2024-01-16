@@ -142,7 +142,7 @@ if CLIENT then
             -- if action == "boolean_right_pickup" then
             --     actionStates["FREELOOK"] = not pressed
             -- end
-            
+
             if action == "boolean_flashlight" then
                 actionStates["CAR_LIGHTS_TOGGLE"] = pressed
                 actionStates["cl_simfphys_lights"] = pressed

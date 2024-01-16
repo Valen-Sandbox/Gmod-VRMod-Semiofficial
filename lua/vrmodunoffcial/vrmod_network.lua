@@ -5,11 +5,11 @@ vrmod.AddCallbackedConvar("vrmod_net_tickrate", nil, tostring(math.ceil(1/engine
 
 local function netReadFrame()
 	local frame = {
-	
+
 		ts = net.ReadFloat(),
-		
+
 		characterYaw = net.ReadUInt(7) * 2.85714,
-		
+
 		finger1 = net.ReadUInt(7) / 100,
 		finger2 = net.ReadUInt(7) / 100,
 		finger3 = net.ReadUInt(7) / 100,
@@ -20,16 +20,16 @@ local function netReadFrame()
 		finger8 = net.ReadUInt(7) / 100,
 		finger9 = net.ReadUInt(7) / 100,
 		finger10 = net.ReadUInt(7) / 100,
-		
+
 		hmdPos = net.ReadVector(),
 		hmdAng = net.ReadAngle(),
 		lefthandPos =net.ReadVector(),
 		lefthandAng = net.ReadAngle(),
 		righthandPos = net.ReadVector(),
 		righthandAng = net.ReadAngle(),
-		
+
 	}
-	
+
 	if net.ReadBool() then
 		frame.waistPos = net.ReadVector()
 		frame.waistAng = net.ReadAngle()
@@ -38,7 +38,7 @@ local function netReadFrame()
 		frame.rightfootPos = net.ReadVector()
 		frame.rightfootAng = net.ReadAngle()
 	end
-	
+
 	return frame
 end
 
@@ -63,7 +63,7 @@ local function buildClientFrame(relative)
 		finger9		= g_VR.input.skeleton_righthand.fingerCurls[4],
 		finger10		= g_VR.input.skeleton_righthand.fingerCurls[5],
 	}
-	
+
 	if g_VR.sixPoints then
 		frame.waistPos		= g_VR.tracking.pose_waist.pos
 		frame.waistAng		= g_VR.tracking.pose_waist.ang
@@ -84,18 +84,18 @@ local function buildClientFrame(relative)
 			frame.rightfootPos, frame.rightfootAng = WorldToLocal(frame.rightfootPos, frame.rightfootAng, plyPos, plyAng)
 		end
 	end
-	
+
 	return frame
 end
 
 local function netWriteFrame(frame)
 
 	net.WriteFloat(SysTime())
-	
+
 	local tmp = frame.characterYaw + math.ceil(math.abs(frame.characterYaw)/360)*360 --normalize and convert characterYaw to 0-360
 	tmp = tmp - math.floor(tmp/360)*360
 	net.WriteUInt(frame.characterYaw*0.35,7) --crush from 0-360 to 0-127
-	
+
 	net.WriteUInt(frame.finger1*100,7)
 	net.WriteUInt(frame.finger2*100,7)
 	net.WriteUInt(frame.finger3*100,7)
@@ -106,14 +106,14 @@ local function netWriteFrame(frame)
 	net.WriteUInt(frame.finger8*100,7)
 	net.WriteUInt(frame.finger9*100,7)
 	net.WriteUInt(frame.finger10*100,7)
-	
+
 	net.WriteVector(frame.hmdPos)
 	net.WriteAngle(frame.hmdAng)
 	net.WriteVector(frame.lefthandPos)
 	net.WriteAngle(frame.lefthandAng)
 	net.WriteVector(frame.righthandPos)
 	net.WriteAngle(frame.righthandAng)
-	
+
 	net.WriteBool(frame.waistPos ~= nil)
 	if frame.waistPos then
 		net.WriteVector(frame.waistPos)
@@ -131,13 +131,13 @@ if CLIENT then
 	vrmod.AddCallbackedConvar("vrmod_net_delay", nil, "0.1", nil, nil, nil, nil, tonumber, nil)
 	vrmod.AddCallbackedConvar("vrmod_net_delaymax", nil, "0.2", nil, nil, nil, nil, tonumber, nil)
 	vrmod.AddCallbackedConvar("vrmod_net_storedframes", nil, "15", nil, nil, nil, nil, tonumber, nil)
-	
-	
+
+
 	g_VR.net = {
 	--[[
-	
+
 		"steamid" = {
-			
+
 			frames = {
 				1 = {
 					ts = Float
@@ -162,19 +162,19 @@ if CLIENT then
 			playbackTime = Float (playhead position in frame timestamp space)
 			sysTime = Float (used to determine dt from previous lerp for advancing playhead position)
 			buffering = Bool
-			
+
 			debugState = String
 			debugNextFrame = Int
 			debugPreviousFrame = Int
 			debugFraction = Float
-			
+
 			characterAltHead = Bool
 			dontHideBullets = Bool
 		}
-		
+
 	]]
 	}
-	
+
 	--[[ for testing net_debug
 	g_VR.net["STEAM_0:1:47301228"] = {
 		frames = {
@@ -189,9 +189,9 @@ if CLIENT then
 			{ts=9.8},
 			{ts=10},
 		},
-		
+
 		playbackTime = 9,
-		
+
 		debugState = "buffering (reached end)",
 		debugNextFrame = 2,
 		debugPreviousFrame = 1,
@@ -209,41 +209,41 @@ if CLIENT then
 		debugToggle = true
 		hook.Add("PostRender","vrutil_netdebug",function()
 			cam.Start2D()
-			
+
 			surface.SetFont( "ChatFont" )
 			surface.SetTextColor( 255, 255, 255 )
-			surface.SetTextPos( 128, 100) 
+			surface.SetTextPos( 128, 100)
 			surface.DrawText( "vrmod_net_debug" )
-			
+
 			local leftSide, rightSide = 140, 628
 			local verticalSpacing = 100
-			
+
 			local iply = 0
 			for k,v in pairs(g_VR.net) do
 				if not v.playbackTime then
 					continue
 				end
-				
+
 				if SysTime()-(v.debugTpsT or 0) > 1 then
 					v.debugTpsT = SysTime()
 					v.debugTps = v.debugTickCount
 					v.debugTickCount = 0
 				end
-			
+
 				local mints, maxts = 9999999,0
 				for i = 1,#v.frames do
 					mints = v.frames[i].ts<mints and v.frames[i].ts or mints
 					maxts = v.frames[i].ts>maxts and v.frames[i].ts or maxts
 				end
-			
+
 				surface.SetDrawColor(0,0,0,200)
 				surface.DrawRect(128, 128+iply*verticalSpacing, 512, 90)
 
 				surface.SetFont( "ChatFont" )
 				surface.SetTextColor( 255, 255, 255 )
-				surface.SetTextPos( 140, 140 + iply*verticalSpacing ) 
+				surface.SetTextPos( 140, 140 + iply*verticalSpacing )
 				surface.DrawText( k.. " | "..v.debugState.. " | "..(v.debugTps or 0).." | "..math.floor((maxts-v.playbackTime)*1000) )
-				
+
 				surface.SetDrawColor(0,0,0,200)
 				surface.DrawRect(leftSide, 160+iply*verticalSpacing, rightSide-leftSide, 20)
 				local tileWidth = (rightSide-leftSide)/#v.frames
@@ -259,27 +259,27 @@ if CLIENT then
 						end
 					end
 				end
-				
+
 				surface.SetDrawColor(0,0,0,200)
 				surface.DrawRect(leftSide, 185+iply*verticalSpacing, rightSide-leftSide, 20)
 				for i = 1,#v.frames do
 					tsfraction = (v.frames[i].ts - mints) / (maxts - mints)
 					surface.SetDrawColor(255-tsfraction*255,0,tsfraction*255,255)
-					
+
 					surface.DrawRect(leftSide + tsfraction*(rightSide-leftSide-2), 185+iply*verticalSpacing, 2, 20)
 				end
 				surface.SetDrawColor(0,255,0,255)
 				surface.DrawRect(leftSide + ((v.playbackTime - mints) / (maxts - mints))*(rightSide-leftSide-2), 185+iply*verticalSpacing, 2, 20)
-				
+
 				iply = iply + 1
 			end
-			
+
 			cam.End2D()
 		end)
 	end )
 
 	function VRUtilNetworkInit() --called by localplayer when they enter vr
-	
+
 		-- transmit loop
 		timer.Create("vrmod_transmit", 1/convarValues.vrmod_net_tickrate, 0,function()
 			if g_VR.threePoints then
@@ -291,16 +291,16 @@ if CLIENT then
 				net.SendToServer()
 			end
 		end)
-		
-		
+
+
 		net.Start("vrutil_net_join")
 		--send some stuff here that doesnt need to be in every frame
 		net.WriteBool(GetConVar("vrmod_althead"):GetBool())
 		net.WriteBool(GetConVar("vrmod_floatinghands"):GetBool())
 		net.SendToServer()
-		
+
 	end
-	
+
 	-- update all lerpedFrames, except for the local player (this function will be hooked to PreRender)
 	local function LerpOtherVRPlayers()
 		local lerpDelay = convarValues.vrmod_net_delay
@@ -321,7 +321,7 @@ if CLIENT then
 				v.playbackTime = v.playbackTime + (SysTime()-v.sysTime)
 				v.sysTime = SysTime()
 				--check if we reached the end
-				if v.playbackTime > v.frames[v.latestFrameIndex].ts then 
+				if v.playbackTime > v.frames[v.latestFrameIndex].ts then
 					v.buffering = true
 					v.debugState = "buffering (reached end)"
 					v.playbackTime = v.frames[v.latestFrameIndex].ts
@@ -378,10 +378,10 @@ if CLIENT then
 					break
 				end
 			end
-			
+
 		end
 	end
-	
+
 	function VRUtilNetUpdateLocalPly()
 		local tab = g_VR.net[LocalPlayer():SteamID()]
 		if g_VR.threePoints and tab then
@@ -389,13 +389,13 @@ if CLIENT then
 			return tab.lerpedFrame
 		end
 	end
-	
+
 	function VRUtilNetworkCleanup() --called by localplayer when they exit vr
 		timer.Remove("vrmod_transmit")
 		net.Start("vrutil_net_exit")
 		net.SendToServer()
 	end
-	
+
 	net.Receive("vrutil_net_tick",function(len)
 		local ply = net.ReadEntity()
 		if not IsValid(ply) then return end
@@ -415,7 +415,7 @@ if CLIENT then
 		tab.frames[index] = frame
 		tab.latestFrameIndex = index
 	end)
-	
+
 	net.Receive("vrutil_net_join",function(len)
 		local ply = net.ReadEntity()
 		if not IsValid(ply) then return end --todo fix this properly lol
@@ -428,14 +428,14 @@ if CLIENT then
 			debugState = "buffering (initial)",
 			debugTickCount = 0,
 		}
-		
+
 		hook.Add("PreRender","vrutil_hook_netlerp",LerpOtherVRPlayers)
-		
+
 		hook.Run( "VRMod_Start", ply )
 	end)
-	
+
 	local swepOriginalFovs = {}
-	
+
 	net.Receive("vrutil_net_exit",function(len)
 		local steamid = net.ReadString()
 		if game.SinglePlayer() then
@@ -457,11 +457,11 @@ if CLIENT then
 		end
 		hook.Run( "VRMod_Exit", ply, steamid )
 	end)
-	
+
 	net.Receive("vrutil_net_switchweapon",function(len)
 		local class = net.ReadString()
 		local vm = net.ReadString()
-		
+
 		if class == "" or vm == "" or vm == "models/weapons/c_arms.mdl" then
 			g_VR.viewModel = nil
 			g_VR.openHandAngles = g_VR.defaultOpenHandAngles
@@ -470,9 +470,9 @@ if CLIENT then
 			g_VR.viewModelMuzzle = nil
 			return
 		end
-		
+
 		-----------------------
-		
+
 		if GetConVar("vrmod_useworldmodels"):GetBool() then
 			vrmod.SetRightHandOpenFingerAngles( g_VR.zeroHandAngles )
 			vrmod.SetRightHandClosedFingerAngles( g_VR.zeroHandAngles )
@@ -484,14 +484,14 @@ if CLIENT then
 			end)
 			return
 		end
-		
+
 		-------------------------
-		
+
 		local vmi = g_VR.viewModelInfo[class] or {}
 		local model = vmi.modelOverride ~= nil and vmi.modelOverride or vm
-		
+
 		g_VR.viewModel = LocalPlayer():GetViewModel()
-		
+
 		local wep = LocalPlayer():GetActiveWeapon()
 		if wep.ViewModelFOV then
 			if not swepOriginalFovs[class] then
@@ -499,7 +499,7 @@ if CLIENT then
 			end
 			wep.ViewModelFOV = GetConVar("fov_desired"):GetFloat()
 		end
-		
+
 		--create offsets if they don't exist
 		if vmi.offsetPos == nil or vmi.offsetAng == nil then
 			vmi.offsetPos, vmi.offsetAng = Vector(0,0,0), Angle(0,0,0)
@@ -517,18 +517,18 @@ if CLIENT then
 				cm:Remove()
 			end
 		end
-		
+
 		--create finger poses
 		vmi.closedHandAngles = vrmod.GetRightHandFingerAnglesFromModel( model )
 
 		vrmod.SetRightHandClosedFingerAngles( vmi.closedHandAngles )
 		vrmod.SetRightHandOpenFingerAngles( vmi.closedHandAngles )
-		
+
 		g_VR.viewModelInfo[class] = vmi
 		g_VR.currentvmi = vmi
-		
+
 	end)
-	
+
 	hook.Add("CreateMove","vrutil_hook_joincreatemove",function(cmd)
 		hook.Remove("CreateMove","vrutil_hook_joincreatemove")
 		timer.Simple(2,function()
@@ -550,11 +550,11 @@ if CLIENT then
 			end
 		end)
 	end)
-	
+
 	net.Receive("vrutil_net_entervehicle",function(len)
 		hook.Call("VRMod_EnterVehicle", nil)
 	end)
-	
+
 	net.Receive("vrutil_net_exitvehicle",function(len)
 		hook.Call("VRMod_ExitVehicle", nil)
 	end)
@@ -569,7 +569,7 @@ if SERVER then
 	util.AddNetworkString("vrutil_net_requestvrplayers")
 	util.AddNetworkString("vrutil_net_entervehicle")
 	util.AddNetworkString("vrutil_net_exitvehicle")
-	
+
 	vrmod.NetReceiveLimited("vrutil_net_tick", convarValues.vrmod_net_tickrate + 5,1200,function(len, ply)
 		--print("sv received net_tick, len: "..len)
 		if g_VR[ply:SteamID()] == nil then
@@ -592,10 +592,10 @@ if SERVER then
 		netWriteFrame(frame)
 		net.SendOmit(ply)
 	end)
-	
+
 	vrmod.NetReceiveLimited("vrutil_net_join",5,2,function(len, ply)
-		if g_VR[ply:SteamID()] ~= nil then 
-			return 
+		if g_VR[ply:SteamID()] ~= nil then
+			return
 		end
 		ply:DrawShadow(false)
 		ply.originalViewOffset = ply:GetViewOffset()
@@ -606,10 +606,10 @@ if SERVER then
 			characterAltHead = net.ReadBool(),
 			dontHideBullets = net.ReadBool(),
 		}
-		
+
 		ply:Give("weapon_vrmod_empty")
 		ply:SelectWeapon("weapon_vrmod_empty")
-		
+
 		--relay join message to everyone except players that aren't fully loaded in yet
 		local omittedPlayers = {}
 		for k,v in ipairs( player.GetAll() ) do
@@ -622,10 +622,10 @@ if SERVER then
 		net.WriteBool(g_VR[ply:SteamID()].characterAltHead)
 		net.WriteBool(g_VR[ply:SteamID()].dontHideBullets)
 		net.SendOmit( omittedPlayers )
-		
+
 		hook.Run( "VRMod_Start", ply )
 	end)
-	
+
 	local function net_exit(steamid)
 		if g_VR[steamid] ~= nil then
 			g_VR[steamid] = nil
@@ -633,24 +633,24 @@ if SERVER then
 			ply:SetCurrentViewOffset(ply.originalViewOffset)
 			ply:SetViewOffset(ply.originalViewOffset)
 			ply:StripWeapon("weapon_vrmod_empty")
-			
+
 			--relay exit message to everyone
 			net.Start("vrutil_net_exit")
 			net.WriteString(steamid)
 			net.Broadcast()
-			
+
 			hook.Run( "VRMod_Exit", ply )
 		end
 	end
-	
+
 	vrmod.NetReceiveLimited("vrutil_net_exit",5,0,function(len, ply)
 		net_exit(ply:SteamID())
 	end)
-	
+
 	hook.Add("PlayerDisconnected","vrutil_hook_playerdisconnected",function(ply)
 		net_exit(ply:SteamID())
 	end)
-	
+
 	vrmod.NetReceiveLimited("vrutil_net_requestvrplayers",5,0,function(len, ply)
 		ply.hasRequestedVRPlayers = true
 		for k,v in pairs(g_VR) do
@@ -666,7 +666,7 @@ if SERVER then
 			end
 		end
 	end)
-	
+
 	hook.Add("PlayerDeath","vrutil_hook_playerdeath",function(ply, inflictor, attacker)
 		if g_VR[ply:SteamID()] ~= nil then
 			net.Start("vrutil_net_exit")
@@ -674,7 +674,7 @@ if SERVER then
 			net.Broadcast()
 		end
 	end)
-	
+
 	hook.Add("PlayerSpawn","vrutil_hook_playerspawn",function(ply)
 				if g_VR[ply:SteamID()] ~= nil then
 			ply:Give("weapon_vrmod_empty")
@@ -686,7 +686,7 @@ if SERVER then
 			net.Broadcast()
 		end
 	end)
-	
+
 	hook.Add("PlayerSwitchWeapon","vrutil_hook_playerswitchweapon",function(ply, old, new)
 		if g_VR[ply:SteamID()] ~= nil then
 			net.Start("vrutil_net_switchweapon")
@@ -699,11 +699,11 @@ if SERVER then
 			end
 			net.Send(ply)
 			timer.Simple(0,function()
-				--new:AddEffects(EF_NODRAW) 
+				--new:AddEffects(EF_NODRAW)
 			end)
 		end
 	end)
-	
+
 	hook.Add("PlayerEnteredVehicle","vrutil_hook_playerenteredvehicle",function(ply, veh)
 				if g_VR[ply:SteamID()] ~= nil then
 			ply:SelectWeapon("weapon_vrmod_empty")
@@ -713,12 +713,12 @@ if SERVER then
 			ply:SetAllowWeaponsInVehicle(1)
 		end
 	end)
-	
+
 	hook.Add("PlayerLeaveVehicle","vrutil_hook_playerleavevehicle",function(ply, veh)
 		if g_VR[ply:SteamID()] ~= nil then
 			net.Start("vrutil_net_exitvehicle")
 			net.Send(ply)
 		end
 	end)
-	
+
 end

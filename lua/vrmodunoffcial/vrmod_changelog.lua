@@ -463,7 +463,7 @@ Version 71:
 hook.Add("VRMod_Menu","changelog",function(frame)
 	local panel = vgui.Create( "DPanel", frame.DPropertySheet )
 	frame.DPropertySheet:AddSheet( "Changelog", panel )
-	
+
 	local richtext = vgui.Create( "RichText", panel )
 	richtext:Dock( FILL )
 	richtext:InsertColorChange(0,0,0,255)

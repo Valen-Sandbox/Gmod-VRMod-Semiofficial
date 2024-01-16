@@ -3,16 +3,16 @@ if not game.SinglePlayer() then return end
 vrmod_ladders = vrmod_ladders or {}
 
 --[[
-									 
-	 
-									   
-						
-				
-				  
-				
-											 
-	  
-	
+
+
+
+
+
+
+
+
+
+
 
 vrmod_ladders["gm_construct"] =  {
 	{
@@ -116,35 +116,35 @@ vrmod_ladders["d1_canals_02"] =  {
 		spacing = 16,
 		count = 23,
 		dismounts = { Vector( -84, -980, -848), },
-	  
-	 
-										
-						
-				
-				  
-			   
-											 
+
+
+
+
+
+
+
+
 	},
 }
 
-									  
-	 
-									
-						 
-				
-				  
-				
-																							 
-	  
-	 
-									
-						 
-				
-				  
-				
-											   
-	  
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 vrmod_ladders["d1_canals_03"] =  {
 	{
@@ -254,54 +254,54 @@ vrmod_ladders["d1_canals_06"] =  {
 	},
 	{
 		pos = Vector(4442, 5899, 20),
-						  
-				
-				  
-				
-																			
-	  
-	  
-	 
-										
+
+
+
+
+
+
+
+
+
 		ang = Angle(0,-90,0),
 		width = 16,
 		spacing = 16,
 		count = 8,
 		dismounts = { Vector( 4416, 5916, 96.1), Vector(4471, 5917, 96.1)},
-	  
-	 
-										
-						  
-				
-				  
-				
-												
-	  
-	  
-	 
-										
-						  
-				
-				  
-			   
-					  
-	  
-	 
-										
-						  
-				
-				  
-				
-																										
-	  
-	  
-	 
-									   
-						
-				
-				  
-				
-											  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	},
 }
 
@@ -335,28 +335,28 @@ vrmod_ladders["d1_canals_07"] =  {
 vrmod_ladders["d1_canals_08"] =  {
 	{
 		pos = Vector(-130, -3547, -442),
-						
-				
-				  
-				
-											  
-	  
-	 
-									
+
+
+
+
+
+
+
+
 		ang = Angle(0,-90,0),
 		width = 16,
 		spacing = 16,
 		count = 13,
 		dismounts = { Vector(-130, -3551, -239)},
 	},
-	 
-								  
-						  
-				
-				  
-			   
-																		
-	  
+
+
+
+
+
+
+
+
 }
 
 vrmod_ladders["d1_canals_10"] =  {
@@ -374,14 +374,14 @@ vrmod_ladders["d1_canals_10"] =  {
 		width = 16,
 		spacing = 16,
 		count = 16,
-											  
-	  
-	 
-									  
-						  
-				
-					
-			   
+
+
+
+
+
+
+
+
 		dismounts = { Vector(3104, 9343, -127)},
 	},
 }
@@ -414,14 +414,14 @@ vrmod_ladders["d1_canals_12"] =  {
 		spacing = 16,
 		count = 5,
 		dismounts = { Vector(571, 11065, 500.1)},
-	  
-	 
-									  
-						  
-				
-				  
-				
-											 
+
+
+
+
+
+
+
+
 	},
 }
 
@@ -496,31 +496,31 @@ vrmod_ladders["d1_eli_02"] =  {
 		spacing = 16,
 		count = 81,
 		dismounts = { Vector(-3488, 3793, -1663)},
-	  
-	 
-									   
-						
-				
-				  
-				
-											 
-	  
-	 
-									
-						
-				
-				  
-				
-											 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	},
-	 
-									  
-						  
-				
-				  
-				
-											 
-	  
+
+
+
+
+
+
+
+
 }
 
 vrmod_ladders["d1_town_01"] =  {
@@ -532,7 +532,7 @@ vrmod_ladders["d1_town_01"] =  {
 		count = 6,
 		dismounts = { Vector(337, -178, -3542)},
 	},
-	  
+
 	{
 		pos = Vector(295, -10, -3639.5),
 		ang = Angle(0,180,0),
@@ -541,7 +541,7 @@ vrmod_ladders["d1_town_01"] =  {
 		count = 16,
 		dismounts = { Vector(310, -41, -3455)},
 	},
-	  
+
 	{
 		pos = Vector(291, -152, -3423.5),
 		ang = Angle(0,180,0),
@@ -620,39 +620,39 @@ vrmod_ladders["d1_town_02a"] =  {
 vrmod_ladders["d1_town_05"] =  {
 	{
 		pos = Vector(-3940, 7671, 911.6),
-						 
-				
-				  
-			   
-											  
-	  
-	 
-									 
-						 
-				
-				  
-			   
-											  
-	  
-	 
-									   
-						 
-				
-				  
-			   
-											  
-	  
-	 
-									 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		ang = Angle(0,0,0),
-				
-				  
-			   
-											  
-	  
-	 
-														   
-						  
+
+
+
+
+
+
+
+
 		width = 16,
 		spacing = 16,
 		count = 8,
@@ -724,26 +724,26 @@ vrmod_ladders["d2_coast_10"] =  {
 	{
 		pos = Vector(5496, 1050, 944),
 		ang = Angle(0,0,0),
-				
-				  
-			   
-											   
-	  
-	 
-															 
-						  
+
+
+
+
+
+
+
+
 		width = 16,
 		spacing = 16,
 		count = 8,
 		dismounts = { Vector(5477, 1026, 1052.1), Vector(5478, 1074, 1052.1)},
-	  
-	 
-										
-							 
-				
-				  
-				
-																		   
+
+
+
+
+
+
+
+
 	},
 }
 
@@ -821,34 +821,34 @@ vrmod_ladders["d2_prison_02"] =  {
 	{
 		pos = Vector(-2524, 3372, 271.4),
 		ang = Angle(0,0,0),
-				
-				  
-				
-												
-	  
-	 
-													   
-						  
+
+
+
+
+
+
+
+
 		width = 16,
 		spacing = 16,
 		count = 12,
 		dismounts = { Vector(-2505, 3393, 384.1)},
-	  
-	 
-													   
-						  
-				
-				  
-				
-											   
-	  
-	 
-										
-						 
-				
-				  
-				
-											   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	},
 }
 
@@ -861,30 +861,30 @@ vrmod_ladders["d2_prison_03"] =  {
 		count = 16,
 		dismounts = { Vector(-2741, 5060, 128.1)},
 	},
-	 
-									   
-						  
-				
-					
-			   
-												
-	  
-	 
-									   
-						  
-				
-					
-			   
-												
-	  
-	 
-									   
-						  
-				
-					
-			   
-												
-	  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 vrmod_ladders["d2_prison_07"] =  {
@@ -924,14 +924,14 @@ vrmod_ladders["d3_c17_03"] =  {
 		width = 16,
 		spacing = 16,
 		count = 16,
-											  
-	  
-	 
-									 
-						  
-				
-				  
-			   
+
+
+
+
+
+
+
+
 		dismounts = { Vector(-3185, -4575, 224.1)},
 	},
 }
@@ -1002,41 +1002,41 @@ vrmod_ladders["d3_c17_10a"] =  {
 }
 
 vrmod_ladders["d3_c17_12"] =  {
-	 
-									  
-						  
-				
-				  
-				
-																		   
-	  
-	 
-									   
-						 
-				
-				  
-				
-											
-	  
-	 
-								  
-						  
-				
-				  
-				
-											
-	  
-	 
-								   
-						 
-				
-				  
-				
-																	 
-	  
-	
 
-								   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
 		pos = Vector(-687, 7032, 136),
 		ang = Angle(0,180,0),
@@ -1055,24 +1055,24 @@ vrmod_ladders["d3_c17_12"] =  {
 	},
 }
 
-								  
-	 
-								   
-						  
-				
-				  
-			   
-											  
-	  
-	 
-								   
-						  
-				
-				  
-			   
-											  
-	  
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if CLIENT then
 
@@ -1098,12 +1098,12 @@ if CLIENT then
 	end)
 
 	local function EnableClimbing()
-	
+
 		local ladders = vrmod_ladders[game.GetMap()] or {}
 		local ladderCount = #ladders
-		
+
 		if ladderCount == 0 then return end
-	
+
 		local targetPoses = {
 				{controllerPoseName = "pose_lefthand", setHandPoseFunc = vrmod.SetLeftHandPose, time = 0},
 				{controllerPoseName = "pose_righthand", setHandPoseFunc = vrmod.SetRightHandPose, time = 0}
@@ -1113,7 +1113,7 @@ if CLIENT then
 		local refPos = nil
 		local refOrigin = nil
 		local dismounts = nil
-	
+
 		local originLerpStartPos = nil
 		local originLerpStartTime = nil
 
@@ -1141,7 +1141,7 @@ if CLIENT then
 
 								hook.Add("VRMod_PreRender","ladders",function()
 									local curTime = SysTime()
-								
+
 									if refHand then
 										local refHandPos = g_VR.tracking[refHand==1 and "pose_lefthand" or "pose_righthand"].pos - g_VR.origin
 										g_VR.origin = refOrigin + (refPos-refHandPos)
@@ -1199,7 +1199,7 @@ if CLIENT then
 						if dismountPos == nil then
 							dismountPos =  g_VR.tracking.hmd.pos + Angle(0,g_VR.tracking.hmd.ang.yaw,0):Forward()*-10
 							dismountPos.z = g_VR.origin.z
-							
+
 						end
 						net.Start("vrmod_ladderteleport")
 						net.WriteVector(dismountPos)
@@ -1213,7 +1213,7 @@ if CLIENT then
 				end
 			end
 		end)
-		
+
 		net.Start("vrmod_enableclimbing")
 		net.WriteBool(true)
 		net.SendToServer()
@@ -1221,15 +1221,15 @@ if CLIENT then
 
 	local function DisableClimbing()
 		vrmod.StartLocomotion()
-	
+
 		hook.Remove("VRMod_Input","ladders")
 		hook.Remove("VRMod_PreRender","ladders")
-		
+
 		net.Start("vrmod_enableclimbing")
 		net.WriteBool(false)
 		net.SendToServer()
 	end
-	
+
 	cvars.RemoveChangeCallback("vrmod_climbing", "vrmod_climbing")
 	cvars.AddChangeCallback("vrmod_climbing",function(convar, oldValue, newValue)
 		if not g_VR.active then return end
@@ -1239,13 +1239,13 @@ if CLIENT then
 			DisableClimbing()
 		end
 	end, "vrmod_climbing")
-	
+
 	hook.Add("VRMod_Start","climbing",function()
 		if convars.vrmod_climbing:GetBool() then
 			EnableClimbing()
 		end
 	end)
-	
+
 	hook.Add("VRMod_Exit","climbing",function()
 		if convars.vrmod_climbing:GetBool() then
 			DisableClimbing()
@@ -1255,9 +1255,9 @@ if CLIENT then
 elseif SERVER then
 	util.AddNetworkString("vrmod_ladderteleport")
 	util.AddNetworkString("vrmod_enableclimbing")
-	
+
 	local climbingEnabled = false
-	
+
 	hook.Add("AcceptInput","vrmod_ladders",function(ent, input, activator, caller, value)
 		if value ~= "vrmod" and ent:GetClass() == "func_useableladder" and (input =="Enable" or input == "Disable") then
 			for k,v in pairs(vrmod_ladders[game.GetMap()]) do
@@ -1270,7 +1270,7 @@ elseif SERVER then
 			end
 		end
 	end)
-	
+
 	net.Receive("vrmod_enableclimbing",function(len, ply)
 		climbingEnabled = net.ReadBool()
 		if climbingEnabled then
@@ -1291,7 +1291,7 @@ elseif SERVER then
 			end
 		end
 	end)
-	
+
 	net.Receive("vrmod_ladderteleport",function(len, ply)
 		local pos = net.ReadVector()
 		ply:SetPos(pos)
@@ -1316,7 +1316,7 @@ elseif SERVER then
 			end
 		end)
 	end)
-	
+
 end
 
 

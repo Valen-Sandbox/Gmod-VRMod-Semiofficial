@@ -22,7 +22,7 @@ if CLIENT then
 				drivingmode = 1
 				VRMOD_SetActiveActionSets("/actions/base", "/actions/driving")
 				LocalPlayer():ConCommand("vrmod_vehicle_bothkeymode 0")
-				-- print("VRMOD_SetActiveActionSets:","driving") 
+				-- print("VRMOD_SetActiveActionSets:","driving")
 			else
 				drivingmode = 0
 				VRMOD_SetActiveActionSets("/actions/base", "/actions/main")
@@ -53,7 +53,7 @@ if CLIENT then
 		end
 	)
 
-	-- print("VRMOD_SetActiveActionSets:","driving") 
+	-- print("VRMOD_SetActiveActionSets:","driving")
 	concommand.Add(
 		"vrmod_keymode_both",
 		function(ply, cmd, args)
@@ -65,7 +65,7 @@ if CLIENT then
 
 	-- concommand.Add( "vrmod_character_apply", function(ply)
 	-- -- g_VR.scale = convarValues.vrmod_characterEyeHeight / ((g_VR.tracking.hmd.pos.z-g_VR.origin.z)/g_VR.scale)
-	-- convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z-convarValues.vrmod_seatedoffset-g_VR.origin.z)) 
+	-- convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z-convarValues.vrmod_seatedoffset-g_VR.origin.z))
 	-- end)
 	concommand.Add(
 		"vrmod_scale_apply",
@@ -240,7 +240,7 @@ if CLIENT then
 				crouchconvar:SetFloat(crouchHeight + 3)
 				local HeadToHmdDist = GetConVar("vrmod_characterHeadToHmdDist")
 				HeadToHmdDist:SetFloat(eyeHeight / 5 - 6.3)
-				-- convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z-convarValues.vrmod_seatedoffset-g_VR.origin.z)) 
+				-- convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z-convarValues.vrmod_seatedoffset-g_VR.origin.z))
 			end
 		end
 	)

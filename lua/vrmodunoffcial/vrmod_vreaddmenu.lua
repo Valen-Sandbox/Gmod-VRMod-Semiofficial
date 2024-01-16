@@ -260,7 +260,7 @@ function VREaddvrmenuOpen()
 		button9:SetTextColor(Color(255, 255, 255))
 		grid:AddItem(button9)
 		button9.DoClick = function()
-			--command start				
+			--command start
 			if button9on == 0 then
 				button9on = 1
 				LocalPlayer():ConCommand("arcticvr_hybridpouch 1")
@@ -315,7 +315,7 @@ function VREaddvrmenuOpen()
 	-- 	draw.RoundedBox(8, 0, 0, w, h, BUTTON_2TIER[math.abs(buttonAon - 2)])
 	-- end
 	-- --2button toggle end
-	--2button toggle start		
+	--2button toggle start
 	local buttonB = vgui.Create("DButton")
 	buttonB:SetText("disable\npickup: ")
 	buttonB:SetSize(120, 60)

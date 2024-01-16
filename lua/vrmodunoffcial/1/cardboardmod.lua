@@ -18,22 +18,22 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 
 	RunConsoleCommand("gmod_mcore_test", "0")
 	-- RunConsoleCommand("viewmodel_fov", "90")
-	
+
 	if VRMOD_GetVersion() >= 12 then
 		VRMOD_Shutdown()
 	end
-	
+
 	if VRMOD_Init() == false then
 		print("vr init failed")
 		return
 	end
-	
-	
+
+
 	--
 	local displayInfo = VRMOD_GetDisplayInfo(1,10)
-	
+
 	local displayCalculations = { left = {}, right = {}}
-		
+
 	for k,v in pairs(displayCalculations) do
 		local mtx = (k=="left") and displayInfo.ProjectionLeft or displayInfo.ProjectionRight
 		local xscale = mtx[1][1]
@@ -51,7 +51,7 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 		v.HorizontalOffset = xoffset
 		v.VerticalOffset = yoffset
 	end
-		
+
 	local uMinLeft = 0.0 + displayCalculations.left.HorizontalOffset * 0.25
 	local uMaxLeft = 0.5 + displayCalculations.left.HorizontalOffset * 0.25
 	local vMinLeft = 0.0 - displayCalculations.left.VerticalOffset * 0.5
@@ -61,26 +61,26 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 	local vMinRight = 0.0 - displayCalculations.right.VerticalOffset * 0.5
 	local vMaxRight = 1.0 - displayCalculations.right.VerticalOffset * 0.5
 	VRMOD_SetSubmitTextureBounds(uMinLeft, vMinLeft, uMaxLeft, vMaxLeft, uMinRight, vMinRight, uMaxRight, vMaxRight)
-		
+
 	local hfovLeft = displayCalculations.left.HorizontalFOV
 	local hfovRight = displayCalculations.right.HorizontalFOV
 	local aspectLeft = displayCalculations.left.AspectRatio
 	local aspectRight = displayCalculations.right.AspectRatio
 	local ipd = displayInfo.TransformRight[1][4]*2
 	local eyez = displayInfo.TransformRight[3][4]
-	
+
 	local rtWidth, rtHeight = displayInfo.RecommendedWidth*2, displayInfo.RecommendedHeight
 	--
-	
+
 	VRMOD_ShareTextureBegin()
 	local rt = GetRenderTarget( "rt_cardboardmod"..math.floor(SysTime()), rtWidth, rtHeight)
 	VRMOD_ShareTextureFinish()
-		
+
 	VRMOD_SetActionManifest("vrmod/vrmod_action_manifest.txt")
 	VRMOD_SetActiveActionSets("/actions/vrmod")
-		
+
 	local scale =  GetConVar("cardboardmod_scale"):GetFloat()
-	
+
 	local view = {
 		x = 0, y = 0,
 		w = rtWidth/2, h = rtHeight,
@@ -92,9 +92,9 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 		bloomtone = true,
 		drawviewmodel = false
 	}
-	
+
 	local tracking = {}
-	
+
 	local pitchOffset, yawOffset = 0, 0
 	local sensitivity = GetConVar("cardboardmod_sensitivity"):GetFloat()
 	hook.Add("CreateMove","cardboardmod_createmove",function(cmd)
@@ -104,30 +104,30 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 			cmd:SetViewAngles(Angle(tracking.hmd.ang.pitch + pitchOffset, tracking.hmd.ang.yaw + yawOffset, tracking.hmd.ang.roll))
 		end
 	end)
-	
+
 	local rt_hud = GetRenderTarget("rt_cardboardmod_hud"..math.floor(SysTime()),rtWidth,rtHeight,false)
 	local mat_hud = CreateMaterial("mat_cardboardmod_hud"..math.floor(SysTime()), "UnlitGeneric",{ ["$basetexture"]	= rt_hud:GetName(), ["$translucent"] = 1 })
-	
+
 	hook.Add( "HUDShouldDraw", "cardboardmod_hudshoulddraw", function(name)
 		if name == "CHudWeaponSelection" then
 			render.SetRenderTarget(rt_hud)
 		end
 	end)
-	
+
 	vgui.GetWorldPanel():SetSize(vrScrW:GetInt(),vrScrH:GetInt())
 	--local panels = vgui.GetWorldPanel():GetChildren()
 	--panels[#panels+1] = GetHUDPanel()
 	--for k,v in pairs(panels) do
 	--	v:SetPaintedManually(true)
 	--end
-	
+
 	local panels = {g_SpawnMenu, g_ContextMenu}
-	
+
 	hook.Add("PostDrawTranslucentRenderables","cardboardmod_postdrawtranslucentrenderables",function()
 		local _,ang = LocalToWorld(Vector(),Angle(0,-90,90),Vector(),LocalPlayer():EyeAngles())
-		
+
 		LocalPlayer():GetViewModel():DrawModel()
-		
+
 		cam.IgnoreZ(true)
 		cam.Start3D2D( LocalPlayer():EyePos() - ang:Up()*100 - ang:Forward()*512*0.1 - ang:Right()*384*0.1, ang, 0.1 )
 			surface.SetDrawColor(255,255,255,255)
@@ -140,19 +140,19 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 			--surface.DrawOutlinedRect(0,0,vrScrW:GetInt(),vrScrH:GetInt())
 		cam.End3D2D()
 		cam.IgnoreZ(false)
-		
+
 	end)
-	
+
 	--local screentex = render.GetScreenEffectTexture()
-	
+
 	hook.Add("RenderScene","cardboardmod_renderscene",function(viewOrigin, viewAngles)
 		VRMOD_SubmitSharedTexture()
 		VRMOD_UpdatePosesAndActions()
 
 		tracking = VRMOD_GetPoses()
-		
+
 		render.PushRenderTarget( rt )
-		
+
 		--render stereo views
 		view.angles = viewAngles
 		view.origin = viewOrigin + view.angles:Right()*-((ipd*scale)/2)
@@ -165,7 +165,7 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 		view.fov = hfovRight
 		view.aspectratio = aspectRight
 		render.RenderView(view)
-		
+
 		render.PopRenderTarget()
 
 		--update hud texture
@@ -187,23 +187,23 @@ concommand.Add( "cardboardmod_start", function( ply, cmd, args )
 		render.OverrideAlphaWriteEnable(false)
 		cam.End2D()
 		render.SetRenderTarget(nil)
-		
+
 		return true
 	end)
-	
+
 end )
-	
+
 concommand.Add( "cardboardmod_exit", function( ply, cmd, args )
 	VRMOD_Shutdown()
 	hook.Remove("RenderScene","cardboardmod_renderscene")
 	hook.Remove("PostDrawTranslucentRenderables","cardboardmod_postdrawtranslucentrenderables")
 	hook.Remove( "HUDShouldDraw", "cardboardmod_hudshoulddraw")
-	
+
 	hook.Add("CreateMove","cardboardmod_createmove",function(cmd)
 		cmd:SetViewAngles(Angle(0,0,0))
 		hook.Remove("CreateMove","cardboardmod_createmove")
 	end)
-	
+
 	RunConsoleCommand("gmod_mcore_test", ogMcore)
 	if g_SpawnMenu then
 		RunConsoleCommand("spawnmenu_border", ogBorder)
@@ -211,6 +211,5 @@ concommand.Add( "cardboardmod_exit", function( ply, cmd, args )
 	RunConsoleCommand("viewmodel_fov", ogVMFOV)
 	vgui.GetWorldPanel():SetSize(vrScrW:GetInt(),vrScrH:GetInt())
 end )
-		
-	
-	
+
+

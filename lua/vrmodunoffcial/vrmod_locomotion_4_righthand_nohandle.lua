@@ -3,7 +3,7 @@ local cv_allowtp = CreateClientConVar("vrmod_allow_teleport", 1,true, FCVAR_REPL
 local cv_usetp = CreateClientConVar("vrmod_allow_teleport_client",0,true,FCVAR_ARCHIVE)
 local cl_analogmoveonly = CreateClientConVar("vrmod_test_analogmoveonly",0,false,FCVAR_ARCHIVE)
 
-if SERVER then 
+if SERVER then
 	util.AddNetworkString("vrmod_teleport")
 	vrmod.NetReceiveLimited("vrmod_teleport",10,200,function(len, ply)
 		if cv_allowtp:GetBool() and g_VR[ply:SteamID()] ~= nil and (hook.Run("PlayerNoClip", ply, true) == true or ULib and ULib.ucl.query( ply, "ulx noclip" ) == true) then
@@ -95,18 +95,18 @@ local function start()
 	local ply = LocalPlayer()
 	local followVec = zeroVec
 	local originVehicleLocalPos, originVehicleLocalAng = zeroVec, zeroAng
-	
+
 	vrmod.AddInGameMenuItem("Reset Vehicle View", 3, 1, function()
 		originVehicleLocalPos = nil
 	end)
-	
+
 	hook.Add("PreRender","vrmod_locomotion",function()
 		if not g_VR.threePoints then return end
 		if ply:InVehicle() then
 			local v = ply:GetVehicle()
 			local attachment = v:GetAttachment(v:LookupAttachment("vehicle_driver_eyes"))
 			if not originVehicleLocalPos then
-				local originHmdRelV, originHmdRelA = WorldToLocal(g_VR.origin, g_VR.originAngle, g_VR.tracking.hmd.pos, Angle(0,g_VR.tracking.hmd.ang.yaw,0)) --where the origin is relative to the hmd				
+				local originHmdRelV, originHmdRelA = WorldToLocal(g_VR.origin, g_VR.originAngle, g_VR.tracking.hmd.pos, Angle(0,g_VR.tracking.hmd.ang.yaw,0)) --where the origin is relative to the hmd
 				g_VR.origin, g_VR.originAngle = LocalToWorld(originHmdRelV + Vector(7,0,2), originHmdRelA, attachment.Pos, attachment.Ang) --where the origin would be if the attachment was the hmd
 				originVehicleLocalPos, originVehicleLocalAng = WorldToLocal( g_VR.origin, g_VR.originAngle, attachment.Pos, attachment.Ang ) --new origin relative to the attachment
 			end
@@ -127,7 +127,7 @@ local function start()
 		local plyTargetPos = g_VR.tracking.hmd.pos + upVec:Cross(g_VR.tracking.hmd.ang:Right())*-10
 		followVec = (ply:GetMoveType() == MOVETYPE_NOCLIP) and zeroVec or Vector( (plyTargetPos.x - plyPos.x) * 8 , (plyPos.y - plyTargetPos.y) * -8,0)
 		--teleport view if further than 64 units from target
-		if followVec:LengthSqr() > 262144 then 
+		if followVec:LengthSqr() > 262144 then
 			local prevOrigin = g_VR.origin
 			g_VR.origin = g_VR.origin + (plyPos-plyTargetPos)
 			g_VR.origin.z = plyPos.z
@@ -144,7 +144,7 @@ local function start()
 		g_VR.origin = g_VR.origin + originVelocity*FrameTime()
 		g_VR.origin.z = plyPos.z
 	end)
-	
+
 	--Pickup Convar Start
 	hook.Add("VRMod_Input","vrmod_locomotion_action",function( action, pressed )
 			if action == "boolean_right_pickup" then
@@ -158,10 +158,10 @@ local function start()
 	end)
 	--Pickup Convar End
 
-	
+
 	hook.Add("CreateMove","vrmod_locomotion",function(cmd,action)
 		if not g_VR.threePoints then return end
-		
+
 		local moveType = ply:GetMoveType()
 		--vehicle behaviour
 		if ply:InVehicle() and !cv_cargunmode:GetBool() then
@@ -186,7 +186,7 @@ if cv_righthandle:GetBool() then
 			cmd:SetButtons( bit.bor(cmd:GetButtons(), g_VR.input.boolean_jump and IN_JUMP  or 0,  g_VR.input.boolean_sprint and IN_SPEED or 0, moveType == MOVETYPE_LADDER and IN_FORWARD or 0, (g_VR.tracking.hmd.pos.z < ( g_VR.origin.z + convarValues.crouchThreshold )) and IN_DUCK or 0 ) )
 		end
 		--set view angles to viewmodel muzzle angles for engine weapon support, note: movement is relative to view angles
-		local viewAngles = g_VR.currentvmi and g_VR.currentvmi.wrongMuzzleAng and g_VR.tracking.pose_righthand.ang or g_VR.viewModelMuzzle and g_VR.viewModelMuzzle.Ang or g_VR.tracking.pose_righthand.ang 
+		local viewAngles = g_VR.currentvmi and g_VR.currentvmi.wrongMuzzleAng and g_VR.tracking.pose_righthand.ang or g_VR.viewModelMuzzle and g_VR.viewModelMuzzle.Ang or g_VR.tracking.pose_righthand.ang
 		viewAngles = viewAngles:Forward():Angle()
 		cmd:SetViewAngles(viewAngles)
 		--noclip behaviour
@@ -222,7 +222,7 @@ if cv_righthandle:GetBool() then
 
 
 	end)
-	
+
 	--
 	concommand.Add("vrmod_debuglocomotion", function( ply, cmd, args )
 		hook[args[1] == "1" and "Add" or "Remove"]("PostDrawTranslucentRenderables","vrmod_playspaceviz",function(depth, sky)
@@ -237,7 +237,7 @@ if cv_righthandle:GetBool() then
 		end)
 	end)
 	--]]
-	
+
 end
 
 local function stop()
@@ -252,7 +252,7 @@ local function stop()
 end
 
 local function options( panel )
-	
+
 	local tmp = vgui.Create("DCheckBoxLabel")
 	panel:Add(tmp)
 	tmp:Dock( TOP )
@@ -263,7 +263,7 @@ local function options( panel )
 	function tmp:OnChange(val)
 		convars.vrmod_controlleroriented:SetBool(val)
 	end
-			
+
 	local tmp = vgui.Create("DCheckBoxLabel")
 	panel:Add(tmp)
 	tmp:Dock( TOP )
@@ -274,7 +274,7 @@ local function options( panel )
 	function tmp:OnChange(val)
 		convars.vrmod_smoothturn:SetBool(val)
 	end
-			
+
 	local tmp = vgui.Create("DNumSlider")
 	panel:Add(tmp)
 	tmp:Dock( TOP )

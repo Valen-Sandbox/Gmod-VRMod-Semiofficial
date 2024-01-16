@@ -15,7 +15,7 @@ if CLIENT then
 				LocalPlayer():ConCommand(pressed and "vrmod_test_lefthandle 1" or "vrmod_test_lefthandle 0")
 				return
 			end
-			
+
 			-- if action == "boolean_handbrake" then
 			-- 	LocalPlayer():ConCommand(pressed and "vrmod_test_handbrake 1" or "vrmod_test_handbrake 0")
 			-- 	return
@@ -27,8 +27,8 @@ if CLIENT then
     hook.Add("CreateMove","vre_simfphysfix_remix",function()
 		local cv_righthandle = CreateClientConVar("vrmod_test_Righthandle","0",true,nil)
 		local cv_lefthandle = CreateClientConVar("vrmod_test_lefthandle","0",true,nil)
-	
-	
+
+
         if not LocalPlayer():InVehicle() or scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil or !g_VR.net[LocalPlayer():SteamID()] then return end
         net.Start("vre_drivingfix_remix")
             net.WriteFloat(g_VR.input.vector1_forward)
@@ -51,11 +51,11 @@ if CLIENT then
 		-- net.SendToServer()
     end)
 
-elseif SERVER then 
+elseif SERVER then
 
 	util.AddNetworkString("vre_drivingfix_remix")
     net.Receive( "vre_drivingfix_remix", function( len, ply )
-        if scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil then return false 
+        if scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil then return false
         else
             local curveh = ply:GetSimfphys()
             if ply:IsDrivingSimfphys() == true then
@@ -82,10 +82,10 @@ elseif SERVER then
 	end)
 
 
-	
+
 	-- util.AddNetworkString("vre_drivingaddbutton")
     -- net.Receive( "vre_drivingaddbutton", function( len, ply )
-        -- if scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil then return false 
+        -- if scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil then return false
         -- else
             -- local curveh = ply:GetSimfphys()
             -- if ply:IsDrivingSimfphys() == true then
@@ -99,5 +99,5 @@ elseif SERVER then
         -- end
 	-- end)
 
-	
+
 end

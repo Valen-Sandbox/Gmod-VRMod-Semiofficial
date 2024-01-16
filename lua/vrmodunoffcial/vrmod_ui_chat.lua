@@ -5,12 +5,12 @@ if CLIENT then
 	local chatPanel = nil
 	local nametags = false
 	local VRClipboard = CreateClientConVar("vrmod_Clipboard","",false,false,"")
-	
+
 	hook.Add("VRMod_Start","voicepermissions",function(ply)
 
 
 	end)
-	
+
 	local function toggleNametags()
 		nametags = not nametags
 		if nametags then
@@ -35,7 +35,7 @@ if CLIENT then
 			hook.Remove( "PostDrawOpaqueRenderables", "vrutil_hook_nametags")
 		end
 	end
-	
+
 	local function addChatMessage( msg )
 		if #chatLog > 30 then
 			table.remove(chatLog, 1)
@@ -54,7 +54,7 @@ if CLIENT then
 			VRUtilMenuRenderPanel("chat")
 		end
 	end
-	
+
 	local function updatePlayerList()
 		if not chatPanel or not chatPanel:IsValid() then return end
 		chatPanel.playerlist:SetText("")
@@ -67,7 +67,7 @@ if CLIENT then
 			VRUtilMenuRenderPanel("chat")
 		end
 	end
-	
+
 	local function ToggleChat()
 		if VRUtilIsMenuOpen("chat") then
 			VRUtilMenuClose("chat")
@@ -224,7 +224,7 @@ if CLIENT then
 				addChatMessage( chatLog[i] )
 			end
 			updatePlayerList()
-			--			
+			--
 			VRUtilMenuOpen("chat", 600, 310, chatPanel, 1, Vector(10,6,13), Angle(0,-90,50), 0.03, true, function() --forw, left, up
 				chatPanel:SetVisible(false)
 				chatPanel:Remove()
@@ -233,7 +233,7 @@ if CLIENT then
 			end)
 		end)
 	end
-	
+
 	hook.Add("ChatText","vrutil_hook_chattext",function(index, name, text, type)
 		if type == "joinleave" then
 			chatLog[#chatLog+1] = {Color(162, 255, 162, 255), text}
@@ -242,7 +242,7 @@ if CLIENT then
 		end
 		addChatMessage( chatLog[#chatLog] )
 	end)
-	
+
 	local orig = chat.AddText
 	chat.AddText = function(...)
 		local args = {...}
@@ -260,16 +260,16 @@ if CLIENT then
 		end
 		addChatMessage( chatLog[#chatLog] )
 	end
-	
 
-	
-	
+
+
+
 	concommand.Add(
 		"vrmod_chatmode",
 		function(ply, cmd, args)
 			ToggleChat()
 		end
 	)
-	
+
 
 end
