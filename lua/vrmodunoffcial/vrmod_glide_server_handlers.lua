@@ -1,4 +1,6 @@
 -- lua/autorun/server/vrmodUnoffcial/glide_server_handlers.lua
+if CLIENT then return end
+
 AddCSLuaFile()
 
     util.AddNetworkString("glide_input_batch_extended")
@@ -14,7 +16,7 @@ AddCSLuaFile()
         local vType = vehicle.VehicleType
         if vType == Glide.VEHICLE_TYPE.CAR or vType == Glide.VEHICLE_TYPE.MOTORCYCLE then
             return
-        end 
+        end
 
         local receivedStates = net.ReadTable()
         if not receivedStates then return end
@@ -100,4 +102,3 @@ AddCSLuaFile()
 
         vehicle:SetTurretAngle(Angle(newPitch, newYaw, 0))
     end)
-

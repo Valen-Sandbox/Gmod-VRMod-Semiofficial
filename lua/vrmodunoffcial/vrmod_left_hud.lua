@@ -342,11 +342,11 @@ hook.Add(
         orig_VRUtilRenderMenuSystem_for_all_hand_huds = nil
     end
 )
-
+--[[
 if vrmod.IsPlayerInVR and vrmod.IsPlayerInVR(LocalPlayer()) then
     timer.Simple(3.4, InitializeAllHandHUDs)
 end
-
+]]
 local lastPeriodicReinit = 0
 local periodicReinitInterval = 5
 hook.Add(

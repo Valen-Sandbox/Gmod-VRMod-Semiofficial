@@ -374,7 +374,6 @@ function vrmod_advanced_magazine()
     end
 end
 
-vrmod_advanced_magazine()
 concommand.Add(
     "vrmod_lua_reset_magent",
     function(ply, cmd, args)

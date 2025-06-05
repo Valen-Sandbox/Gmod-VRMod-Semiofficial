@@ -1,6 +1,8 @@
 -- ASTW2 VRMod Fix
 -- このスクリプトはVRModでASTW2ベースの武器使用時のViewmodel表示問題を修正します
-if CLIENT then
+if SERVER then return end
+
+function vrmod.EnableASTW2Fix()
     -- VRModが存在するか確認するヘルパー関数
     local function IsVRModActive()
         return vrmod and vrmod.IsPlayerInVR and vrmod.IsPlayerInVR(LocalPlayer())

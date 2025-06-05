@@ -975,6 +975,8 @@ function vrmod_lua()
 					end
 				)
 			end
+
+			vrmod.EnableASTW2Fix()
 		end
 
 		function VRUtilClientExit()

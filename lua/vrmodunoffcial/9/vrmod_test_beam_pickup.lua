@@ -165,21 +165,9 @@ concommand.Add(
     end
 )
 
-hook.Add(
-    "PostDrawTranslucentRenderables",
-    "vrmod_pickup_beam_laser",
-    function()
-        if GetConVar("vrmod_pickup_beam_enable"):GetBool() then
-            local leftHandPos, leftHandAng = vrmod.GetLeftHandPose(LocalPlayer())
-            local rightHandPos, rightHandAng = vrmod.GetRightHandPose(LocalPlayer())
-            DoTrace(leftHandPos, leftHandAng)
-            DoTrace(rightHandPos, rightHandAng)
-        end
-    end
-)
-
 if CLIENT then
     local cl_pickupdisable = CreateClientConVar("vrmod_pickup_beam_enable", 1, true, FCVAR_ARCHIVE)
+
     hook.Add(
         "VRMod_Input",
         "vrmod_pickup_beam",
@@ -200,5 +188,20 @@ if CLIENT then
             end
         end
     )
+
+    cvars.AddChangeCallback("vrmod_pickup_beam_enable", function(_, _, newValue)
+        if tobool(newValue) then
+            hook.Add("PostDrawTranslucentRenderables", "vrmod_pickup_beam_laser", function()
+                if cl_pickupdisable:GetBool() then
+                    local leftHandPos, leftHandAng = vrmod.GetLeftHandPose(LocalPlayer())
+                    local rightHandPos, rightHandAng = vrmod.GetRightHandPose(LocalPlayer())
+                    DoTrace(leftHandPos, leftHandAng)
+                    DoTrace(rightHandPos, rightHandAng)
+                end
+            end)
+        elseif hook.GetTable().PostDrawTranslucentRenderables.vrmod_pickup_beam_laser then
+            hook.Remove("PostDrawTranslucentRenderables", "vrmod_pickup_beam_laser")
+        end
+    end)
 end
 --[vrmod_test_pickup_beam.lua]end--
