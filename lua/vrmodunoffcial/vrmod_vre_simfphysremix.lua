@@ -23,13 +23,11 @@ if CLIENT then
 	end)
 	--Pickup Convar End
 
+    local cv_righthandle = CreateClientConVar("vrmod_test_Righthandle","0",true,nil)
+    local cv_lefthandle = CreateClientConVar("vrmod_test_lefthandle","0",true,nil)
 
     hook.Add("CreateMove","vre_simfphysfix_remix",function()
-		local cv_righthandle = CreateClientConVar("vrmod_test_Righthandle","0",true,nil)
-		local cv_lefthandle = CreateClientConVar("vrmod_test_lefthandle","0",true,nil)
-
-
-        if not LocalPlayer():InVehicle() or scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil or !g_VR.net[LocalPlayer():SteamID()] then return end
+        if not g_VR.net[LocalPlayer():SteamID()] or not LocalPlayer():InVehicle() or scripted_ents.Get("gmod_sent_vehicle_fphysics_base") == nil then return end
         net.Start("vre_drivingfix_remix")
             net.WriteFloat(g_VR.input.vector1_forward)
             net.WriteFloat(g_VR.input.vector1_reverse)

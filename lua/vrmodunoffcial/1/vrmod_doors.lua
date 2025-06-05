@@ -1,3 +1,9 @@
+local doorClasses = {
+	["prop_door_rotating"] = true,
+	["prop_dynamic"] = true,
+	["func_door_rotating"] = true,
+	["func_door"] = true,
+}
 
 if CLIENT then
 
@@ -210,7 +216,7 @@ elseif SERVER then
 
 	vrmod.NetReceiveLimited("vrmod_doors", 5, 32, function(len, ply)
 		local ent = net.ReadEntity()
-		if hook.Run("PlayerUse", ply, ent) ~= false then
+		if hook.Run("PlayerUse", ply, ent) ~= false and doorClasses[ent:GetClass()] then
 			ent:Use(ply)
 		end
 	end)
