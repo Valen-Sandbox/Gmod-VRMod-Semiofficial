@@ -156,7 +156,7 @@ if contexticon:GetBool() then
 		"DesktopWindows",
 		"vrmod_context",
 		{
-			title = "VRMod_Menu",
+			title = "VRMod Menu",
 			icon = "icon16/find.png",
 			init = function()
 				LocalPlayer():ConCommand("vrmod")

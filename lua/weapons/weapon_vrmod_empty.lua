@@ -3,7 +3,7 @@ SWEP.PrintName = "Empty Hand"
 SWEP.Slot = 0
 SWEP.SlotPos = 0
 
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 
 SWEP.ViewModel = "models/weapons/c_arms.mdl"
 SWEP.WorldModel = ""
