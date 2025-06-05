@@ -21,6 +21,7 @@ meta.MakePopup = function(...)
 		0.1,
 		function()
 			if not IsValid(panel) then return end
+			panel:SetPaintedManually(true)
 			if panel:GetName() == "DMenu" then
 				--temporary hack because paintmanual doesnt seem to work on the dmenu for some reason
 				panel = panel:GetChildren()[1]
@@ -28,6 +29,7 @@ meta.MakePopup = function(...)
 					surface.SetDrawColor(150, 149, 160)
 					surface.DrawRect(0, 0, w, h)
 				end
+
 				popupCount = popupCount + 1
 			end
 
@@ -144,7 +146,6 @@ meta.MakePopup = function(...)
 								if not g_VR.active and IsValid(panel) then
 									panel:MakePopup() --make sure we don't leave unclickable panels open when exiting vr
 									panel:RequestFocus()
-
 								end
 							end
 						)

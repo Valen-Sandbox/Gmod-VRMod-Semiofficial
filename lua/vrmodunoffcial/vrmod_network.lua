@@ -23,7 +23,7 @@ local function netReadFrame()
 
 		hmdPos = net.ReadVector(),
 		hmdAng = net.ReadAngle(),
-		lefthandPos =net.ReadVector(),
+		lefthandPos = net.ReadVector(),
 		lefthandAng = net.ReadAngle(),
 		righthandPos = net.ReadVector(),
 		righthandAng = net.ReadAngle(),
@@ -128,11 +128,11 @@ end
 
 if CLIENT then
 
-	vrmod.AddCallbackedConvar("vrmod_net_delay", nil, "0.1", nil, nil, nil, nil, tonumber, nil)
-	vrmod.AddCallbackedConvar("vrmod_net_delaymax", nil, "0.2", nil, nil, nil, nil, tonumber, nil)
-	vrmod.AddCallbackedConvar("vrmod_net_storedframes", nil, "15", nil, nil, nil, nil, tonumber, nil)
-
-
+	vrmod.AddCallbackedConvar("vrmod_net_delay", nil, "0.1", FCVAR_ARCHIVE, nil, nil, nil, tonumber, nil)
+	vrmod.AddCallbackedConvar("vrmod_net_delaymax", nil, "0.2", FCVAR_ARCHIVE, nil, nil, nil, tonumber, nil)
+	vrmod.AddCallbackedConvar("vrmod_net_storedframes", nil, "15", FCVAR_ARCHIVE, nil, nil, nil, tonumber, nil)
+	
+	
 	g_VR.net = {
 	--[[
 
@@ -632,8 +632,8 @@ if SERVER then
 			local ply = player.GetBySteamID(steamid)
 			ply:SetCurrentViewOffset(ply.originalViewOffset)
 			ply:SetViewOffset(ply.originalViewOffset)
-			ply:StripWeapon("weapon_vrmod_empty")
-
+			-- ply:StripWeapon("weapon_vrmod_empty")
+			
 			--relay exit message to everyone
 			net.Start("vrutil_net_exit")
 			net.WriteString(steamid)
@@ -710,7 +710,6 @@ if SERVER then
 			ply:SetActiveWeapon(ply:GetWeapon("weapon_vrmod_empty"))
 			net.Start("vrutil_net_entervehicle")
 			net.Send(ply)
-			ply:SetAllowWeaponsInVehicle(1)
 		end
 	end)
 

@@ -2,9 +2,101 @@ if SERVER then return end
 g_VR = g_VR or {}
 g_VR.characterYaw = 0
 local convars, convarValues = vrmod.GetConvars()
+local seatedOffset, crouchOffset = Vector(), Vector()
+local function updateOffsetHook()
+	seatedOffset.z = convarValues.vrmod_seated and convarValues.vrmod_seatedoffset or 0
+	if seatedOffset.z == 0 and crouchOffset.z == 0 then
+		hook.Remove("VRMod_Tracking", "seatedmode")
+
+		return
+	end
+
+	hook.Add(
+		"VRMod_Tracking",
+		"seatedmode",
+		function()
+			g_VR.tracking.hmd.pos = g_VR.tracking.hmd.pos + seatedOffset + crouchOffset
+			g_VR.tracking.pose_lefthand.pos = g_VR.tracking.pose_lefthand.pos + seatedOffset + crouchOffset
+			g_VR.tracking.pose_righthand.pos = g_VR.tracking.pose_righthand.pos + seatedOffset + crouchOffset
+		end
+	)
+end
+
+vrmod.AddCallbackedConvar(
+	"vrmod_seatedoffset",
+	nil,
+	"0",
+	FCVAR_ARCHIVE,
+	nil,
+	nil,
+	nil,
+	tonumber,
+	function(val)
+		updateOffsetHook()
+	end
+)
+
+vrmod.AddCallbackedConvar(
+	"vrmod_seated",
+	nil,
+	"0",
+	FCVAR_ARCHIVE,
+	nil,
+	nil,
+	nil,
+	tobool,
+	function(val)
+		updateOffsetHook()
+	end
+)
+
+hook.Add(
+	"VRMod_Menu",
+	"vrmod_n_seated",
+	function(frame)
+		frame.SettingsForm:CheckBox("Enable seated offset", "vrmod_seated")
+		frame.SettingsForm:ControlHelp("Adjust from height adjustment menu")
+	end
+)
+
+hook.Add(
+	"VRMod_Start",
+	"seatedmode",
+	function(ply)
+		if ply ~= LocalPlayer() then return end
+		updateOffsetHook()
+	end
+)
+
+local crouchTarget = 0
+hook.Add(
+	"VRMod_Input",
+	"crouching",
+	function(action, pressed)
+		if action == "boolean_crouch" and pressed then
+			crouchTarget = (crouchTarget == 0) and math.min(0, 38 - (g_VR.tracking.hmd.pos.z - g_VR.origin.z)) or 0
+			local speed = (crouchTarget == 0 and 36 or -36) * (1 / LocalPlayer():GetDuckSpeed())
+			hook.Add(
+				"PreRender",
+				"vrmod_crouch",
+				function()
+					crouchOffset.z = crouchOffset.z + speed * FrameTime()
+					if crouchOffset.z > 0 or crouchTarget < 0 and crouchOffset.z < crouchTarget then
+						crouchOffset.z = crouchTarget
+						hook.Remove("PreRender", "vrmod_crouch")
+						updateOffsetHook()
+					end
+				end
+			)
+
+			crouchOffset.z = crouchOffset.z + 0.01
+			updateOffsetHook()
+		end
+	end
+)
+
 function VRUtilOpenHeightMenu()
 	if not g_VR.threePoints or VRUtilIsMenuOpen("heightmenu") then return end
-	--create mirror
 	rt_mirror = GetRenderTarget("rt_vrmod_heightcalmirror", 2048, 2048)
 	mat_mirror = CreateMaterial(
 		"mat_vrmod_heightcalmirror",
@@ -28,8 +120,12 @@ function VRUtilOpenHeightMenu()
 
 			local mirrorPos = Vector(g_VR.tracking.hmd.pos.x, g_VR.tracking.hmd.pos.y, g_VR.origin.z + 45) + Angle(0, mirrorYaw, 0):Forward() * 50
 			local mirrorAng = Angle(0, mirrorYaw - 90, 90)
-			-- g_VR.menus.heightmenu.pos = mirrorPos + Vector(0,0,30) + mirrorAng:Forward()*-15
-			-- g_VR.menus.heightmenu.ang = mirrorAng
+			local moded = GetConVar("vrmod_attach_heightmenu"):GetInt()
+			if moded == 2 then
+				g_VR.menus.heightmenu.pos = mirrorPos + Vector(0, 0, 30) + mirrorAng:Forward() * -15
+				g_VR.menus.heightmenu.ang = mirrorAng
+			end
+
 			local camPos = LocalToWorld(WorldToLocal(EyePos(), Angle(), mirrorPos, mirrorAng) * Vector(1, 1, -1), Angle(), mirrorPos, mirrorAng)
 			local camAng = EyeAngles()
 			camAng = Angle(camAng.pitch, mirrorAng.yaw + (mirrorAng.yaw - camAng.yaw), 180 - camAng.roll)
@@ -89,7 +185,6 @@ function VRUtilOpenHeightMenu()
 		end
 	)
 
-	--create controls
 	local mode = convarValues.vrmod_attach_heightmenu
 	if mode == 0 then
 		VRUtilMenuOpen(
@@ -97,16 +192,17 @@ function VRUtilOpenHeightMenu()
 			300,
 			512,
 			nil,
-			0,
-			Vector(),
-			Angle(),
-			0.1,
+			3,
+			Vector(50, 8, 10),
+			Angle(0, -90, 90),
+			0.05,
 			true,
 			function()
 				hook.Remove("PreDrawTranslucentRenderables", "vrmodheightmirror")
+				hook.Remove("VRMod_Input", "vrmodheightmenuinput")
 			end
 		)
-	else
+	elseif mode == 1 then
 		VRUtilMenuOpen(
 			"heightmenu",
 			300,
@@ -119,6 +215,23 @@ function VRUtilOpenHeightMenu()
 			true,
 			function()
 				hook.Remove("PreDrawTranslucentRenderables", "vrmodheightmirror")
+				hook.Remove("VRMod_Input", "vrmodheightmenuinput")
+			end
+		)
+	else
+		VRUtilMenuOpen(
+			"heightmenu",
+			300,
+			512,
+			nil,
+			0,
+			Vector(),
+			Angle(),
+			0.1,
+			true,
+			function()
+				hook.Remove("PreDrawTranslucentRenderables", "vrmodheightmirror")
+				hook.Remove("VRMod_Input", "vrmodheightmenuinput")
 			end
 		)
 	end
@@ -149,10 +262,14 @@ function VRUtilOpenHeightMenu()
 			font = "Trebuchet24",
 			text_x = 25,
 			text_y = 15,
-			enabled = not convarValues.vrmod_seated,
+			enabled = true,
 			fn = function()
-				g_VR.scale = g_VR.scale + 0.5
-				convars.vrmod_scale:SetFloat(g_VR.scale)
+				if convarValues.vrmod_seated then
+					convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_seatedoffset + 0.5)
+				else
+					g_VR.scale = g_VR.scale + 0.5
+					convars.vrmod_scale:SetFloat(g_VR.scale)
+				end
 			end
 		},
 		{
@@ -164,10 +281,14 @@ function VRUtilOpenHeightMenu()
 			font = "Trebuchet24",
 			text_x = 25,
 			text_y = 0,
-			enabled = not convarValues.vrmod_seated,
+			enabled = true,
 			fn = function()
-				g_VR.scale = convarValues.vrmod_characterEyeHeight / ((g_VR.tracking.hmd.pos.z - g_VR.origin.z) / g_VR.scale)
-				convars.vrmod_scale:SetFloat(g_VR.scale)
+				if convarValues.vrmod_seated then
+					convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z - convarValues.vrmod_seatedoffset - g_VR.origin.z))
+				else
+					g_VR.scale = convarValues.vrmod_characterEyeHeight / ((g_VR.tracking.hmd.pos.z - g_VR.origin.z) / g_VR.scale)
+					convars.vrmod_scale:SetFloat(g_VR.scale)
+				end
 			end
 		},
 		{
@@ -179,10 +300,14 @@ function VRUtilOpenHeightMenu()
 			font = "Trebuchet24",
 			text_x = 25,
 			text_y = 15,
-			enabled = not convarValues.vrmod_seated,
+			enabled = true,
 			fn = function()
-				g_VR.scale = g_VR.scale - 0.5
-				convars.vrmod_scale:SetFloat(g_VR.scale)
+				if convarValues.vrmod_seated then
+					convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_seatedoffset - 0.5)
+				else
+					g_VR.scale = g_VR.scale - 0.5
+					convars.vrmod_scale:SetFloat(g_VR.scale)
+				end
 			end
 		},
 		{
@@ -197,36 +322,216 @@ function VRUtilOpenHeightMenu()
 			enabled = true,
 			fn = function()
 				buttons[5].text = (not convarValues.vrmod_seated) and "Disable\nSeated\nOffset" or "Enable\nSeated\nOffset"
-				buttons[2].enabled = convarValues.vrmod_seated
-				buttons[3].enabled = convarValues.vrmod_seated
-				buttons[4].enabled = convarValues.vrmod_seated
-				buttons[6].enabled = not convarValues.vrmod_seated
 				convars.vrmod_seated:SetBool(not convarValues.vrmod_seated)
 				renderControls()
 			end
 		},
 		{
-			x = 0,
-			y = 255,
+			x = 250,
+			y = 395,
 			w = 50,
 			h = 50,
-			text = "Auto\nOffset",
+			text = "Reset\nConfig",
 			font = "Trebuchet18",
 			text_x = 25,
 			text_y = 5,
-			enabled = convarValues.vrmod_seated,
+			enabled = true,
 			fn = function()
-				convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z - convarValues.vrmod_seatedoffset - g_VR.origin.z))
+				RunConsoleCommand("vrmod_character_reset")
+				convars.vrmod_scale:SetFloat(38.7)
+				convars.vrmod_seatedoffset:SetFloat(0)
+				RunConsoleCommand("vrmod_restart")
+			end
+		},
+		{
+			x = 250,
+			y = 450,
+			w = 50,
+			h = 50,
+			text = "Auto\nSet",
+			font = "Trebuchet18",
+			text_x = 25,
+			text_y = 5,
+			enabled = true,
+			fn = function()
+				RunConsoleCommand("vrmod_hide_head", 0)
+				RunConsoleCommand("vrmod_character_stop")
+				RunConsoleCommand("vrmod_scale", 38.7)
+				RunConsoleCommand("vrmod_characterHeadToHmdDist", 6.3)
+				RunConsoleCommand("vrmod_characterEyeHeight", 66.8)
+				RunConsoleCommand("vrmod_seatedoffset", 66.8)
+				AddCSLuaFile("vrmodunoffcial/vrmod_character.lua")
+				include("vrmodunoffcial/vrmod_character.lua")
+				RunConsoleCommand("vrmod_character_auto")
+				RunConsoleCommand("vrmod_seatedoffset_auto")
+				timer.Simple(
+					3.5,
+					function()
+						RunConsoleCommand("vrmod_character_start")
+					end
+				)
+
+				timer.Simple(
+					3.0,
+					function()
+						if convarValues.vrmod_seated then
+							convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z - convarValues.vrmod_seatedoffset - g_VR.origin.z))
+						else
+							g_VR.scale = convarValues.vrmod_characterEyeHeight / ((g_VR.tracking.hmd.pos.z - g_VR.origin.z) / g_VR.scale)
+							convars.vrmod_scale:SetFloat(g_VR.scale)
+						end
+					end
+				)
+
+				timer.Simple(
+					4.0,
+					function()
+						if convarValues.vrmod_seated then
+							convars.vrmod_seatedoffset:SetFloat(convarValues.vrmod_characterEyeHeight - (g_VR.tracking.hmd.pos.z - convarValues.vrmod_seatedoffset - g_VR.origin.z))
+						else
+							g_VR.scale = convarValues.vrmod_characterEyeHeight / ((g_VR.tracking.hmd.pos.z - g_VR.origin.z) / g_VR.scale)
+							convars.vrmod_scale:SetFloat(g_VR.scale)
+						end
+					end
+				)
+
+				timer.Simple(
+					4.5,
+					function()
+						if convarValues.vrmod_characterEyeHeight < 2.0 and not convarValues.vrmod_seated then
+							RunConsoleCommand("vrmod_character_reset")
+							convars.vrmod_scale:SetFloat(38.7)
+							convars.vrmod_characterHeadToHmdDist:SetFloat(6.3)
+							convars.vrmod_characterHeadToHmdDist:SetFloat(6.3)
+							convars.vrmod_characterEyeHeight:SetFloat(66.8)
+							convars.vrmod_crouchthreshold:SetFloat(40)
+							convars.vrmod_seatedoffset:SetFloat(66.8)
+							convars.vrmod_znear:SetFloat(6.0)
+						end
+
+						RunConsoleCommand("vrmod_character_start")
+					end
+				)
+			end
+		},
+		{
+			x = 0,
+			y = 450,
+			w = 50,
+			h = 50,
+			text = "HideNear\nHMD\n-",
+			font = "Trebuchet18",
+			text_x = 25,
+			text_y = 5,
+			enabled = g_VR.view.znear >= 0.5,
+			fn = function()
+				g_VR.view.znear = g_VR.view.znear - 0.5
+			end
+		},
+		{
+			x = 100,
+			y = 450,
+			w = 50,
+			h = 50,
+			text = "HideNear\nHMD\n+",
+			font = "Trebuchet18",
+			text_x = 25,
+			text_y = 5,
+			enabled = g_VR.view.znear <= 20.0,
+			fn = function()
+				g_VR.view.znear = g_VR.view.znear + 0.5
+			end
+		},
+		{
+			x = 0,
+			y = 350,
+			w = 50,
+			h = 50,
+			text = "Hide\nHead",
+			font = "Trebuchet18",
+			text_x = 25,
+			text_y = 5,
+			enabled = true,
+			fn = function()
+				local current = GetConVar("vrmod_hide_head"):GetBool()
+				RunConsoleCommand("vrmod_hide_head", current and "0" or "1")
+				RunConsoleCommand("vrmod_character_stop")
+				timer.Simple(
+					1,
+					function()
+						RunConsoleCommand("vrmod_character_start")
+					end
+				)
+			end
+		},
+		{
+			x = 100,
+			y = 350,
+			w = 50,
+			h = 50,
+			text = "reset\nBody",
+			font = "Trebuchet18",
+			text_x = 25,
+			text_y = 5,
+			enabled = true,
+			fn = function()
+				-- local current = GetConVar("vrmod_hide_body"):GetBool()
+				-- RunConsoleCommand("vrmod_hide_body", current and "0" or "1")
+				RunConsoleCommand("vrmod_character_stop")
+				timer.Simple(
+					1,
+					function()
+						RunConsoleCommand("vrmod_character_start")
+					end
+				)
 			end
 		},
 	}
 
+	-- {
+	-- 	x = 0,
+	-- 	y = 405,
+	-- 	w = 50,
+	-- 	h = 50,
+	-- 	text = "Hide\nArms",
+	-- 	font = "Trebuchet18",
+	-- 	text_x = 25,
+	-- 	text_y = 5,
+	-- 	enabled = true,
+	-- 	fn = function()
+	-- 		local current = GetConVar("vrmod_hide_arms"):GetBool()
+	-- 		RunConsoleCommand("vrmod_hide_arms", current and "0" or "1")
+	-- 		RunConsoleCommand("vrmod_character_stop")
+	-- 		timer.Simple(2, function()
+	-- 			 RunConsoleCommand("vrmod_character_start")
+	-- 		end)
+	-- 	end
+	-- },
+	-- {
+	-- 	x = 100,
+	-- 	y = 405,
+	-- 	w = 50,
+	-- 	h = 50,
+	-- 	text = "Hide\nLegs",
+	-- 	font = "Trebuchet18",
+	-- 	text_x = 25,
+	-- 	text_y = 5,
+	-- 	enabled = true,
+	-- 	fn = function()
+	-- 		local current = GetConVar("vrmod_hide_legs"):GetBool()
+	-- 		RunConsoleCommand("vrmod_hide_legs", current and "0" or "1")
+	-- 		RunConsoleCommand("vrmod_character_stop")
+	-- 		timer.Simple(2, function()
+	-- 			 RunConsoleCommand("vrmod_character_start")
+	-- 		end)
+	-- 	end
+	-- },
 	renderControls = function()
 		VRUtilMenuRenderStart("heightmenu")
 		surface.SetDrawColor(0, 0, 0, 255)
-		draw.DrawText("note: you must disable seated mode\nand stand up irl when adjusting scale", "Trebuchet18", 3, -2, Color(0, 0, 0, 255), TEXT_ALIGN_LEFT)
 		for k, v in ipairs(buttons) do
-			surface.SetDrawColor(0, 0, 0, v.enabled and 255 or 128)
+			local color = v.enabled and 255 or 128
+			surface.SetDrawColor(0, 0, 0, color)
 			surface.DrawRect(v.x, v.y, v.w, v.h)
 			draw.DrawText(v.text, v.font, v.x + v.text_x, v.y + v.text_y, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end

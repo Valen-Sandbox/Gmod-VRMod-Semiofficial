@@ -62,7 +62,7 @@ local function CurvedPlane(w, h, segments, degrees, matrix)
 	return mesh
 end
 
-local rt = GetRenderTarget("vrmod_hud", vrScrW:GetInt(), vrScrH:GetInt(), false)
+	local rt = GetRenderTarget("vrmod_hud", vrScrW:GetInt(), vrScrH:GetInt(), false)
 local mat = Material("!vrmod_hud")
 mat = not mat:IsError() and mat or CreateMaterial(
 	"vrmod_hud",
@@ -86,7 +86,7 @@ end
 local function AddHUD()
 	RemoveHUD()
 	if not g_VR.active or not convarValues.vrmod_hud then return end
-		local mtx = Matrix()
+	local mtx = Matrix()
 	mtx:Translate(Vector(0, 0, vrScrH:GetInt() * convarValues.vrmod_hudscale / 2))
 	mtx:Rotate(Angle(0, -90, -90))
 	local meshName = convarValues.vrmod_hudscale .. "_" .. convarValues.vrmod_hudcurve
@@ -116,7 +116,7 @@ local function AddHUD()
 			render.OverrideAlphaWriteEnable(true, true)
 			render.Clear(0, 0, 0, convarValues.vrmod_hudtestalpha, true, true)
 			render.RenderHUD(0, 0, vrScrW:GetInt(), vrScrH:GetInt())
-			render.OverrideAlphaWriteEnable(false)
+				render.OverrideAlphaWriteEnable(false)
 			render.PopRenderTarget()
 			mtx:Identity()
 			mtx:Translate(g_VR.tracking.hmd.pos + g_VR.tracking.hmd.ang:Forward() * convarValues.vrmod_huddistance)
@@ -137,12 +137,12 @@ local function AddHUD()
 	end
 end
 
-vrmod.AddCallbackedConvar("vrmod_hud", nil, 1, nil, nil, nil, nil, tobool, AddHUD)
-vrmod.AddCallbackedConvar("vrmod_hudblacklist", nil, "", nil, nil, nil, nil, nil, AddHUD)
-vrmod.AddCallbackedConvar("vrmod_hudcurve", nil, "60", nil, nil, nil, nil, tonumber, AddHUD)
-vrmod.AddCallbackedConvar("vrmod_hudscale", nil, "0.05", nil, nil, nil, nil, tonumber, AddHUD)
-vrmod.AddCallbackedConvar("vrmod_huddistance", nil, "60", nil, nil, nil, nil, tonumber)
-vrmod.AddCallbackedConvar("vrmod_hudtestalpha", nil, "0", nil, nil, nil, nil, tonumber)
+vrmod.AddCallbackedConvar("vrmod_hud", nil, 1, FCVAR_ARCHIVE, nil, nil, nil, tobool, AddHUD)
+vrmod.AddCallbackedConvar("vrmod_hudblacklist", nil, "", FCVAR_ARCHIVE, nil, nil, nil, nil, AddHUD)
+vrmod.AddCallbackedConvar("vrmod_hudcurve", nil, "60", FCVAR_ARCHIVE, nil, nil, nil, tonumber, AddHUD)
+vrmod.AddCallbackedConvar("vrmod_hudscale", nil, "0.05", FCVAR_ARCHIVE, nil, nil, nil, tonumber, AddHUD)
+vrmod.AddCallbackedConvar("vrmod_huddistance", nil, "60", FCVAR_ARCHIVE, nil, nil, nil, tonumber)
+vrmod.AddCallbackedConvar("vrmod_hudtestalpha", nil, "0", FCVAR_ARCHIVE, nil, nil, nil, tonumber)
 hook.Add(
 	"VRMod_Menu",
 	"vrmod_hud",

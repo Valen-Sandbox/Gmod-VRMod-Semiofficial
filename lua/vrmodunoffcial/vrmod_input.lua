@@ -1,10 +1,24 @@
-local cl_bothkey = CreateClientConVar("vrmod_vehicle_bothkeymode", 0, true, FCVAR_ARCHIVE)
+local cl_bothkey = CreateClientConVar("vrmod_vehicle_bothkeymode", 1, true, FCVAR_ARCHIVE)
 local cl_pickupdisable = CreateClientConVar("vr_pickup_disable_client", 0, true, FCVAR_ARCHIVE)
 local cl_lefthand = CreateClientConVar("vrmod_LeftHand", 0, true, FCVAR_ARCHIVE)
-local cl_lefthandfire = CreateClientConVar("vrmod_lefthandleftfire", 0, true, FCVAR_ARCHIVE)
+local cl_lefthandfire = CreateClientConVar("vrmod_lefthandleftfire", 1, true, FCVAR_ARCHIVE)
 local cl_hudonlykey = CreateClientConVar("vrmod_hud_visible_quickmenukey", 0, true, FCVAR_ARCHIVE)
 if SERVER then return end
 local ply = LocalPlayer()
+local VRKeyStates = {}
+-- -- VRの入力状態をシミュレートするための関数
+-- local function SimulateKeyPress(key, pressed)
+-- 	VRKeyStates[key] = pressed
+-- end
+
+-- -- input.IsKeyDown をオーバーライド
+-- local original_IsKeyDown = input.IsKeyDown
+-- function input.IsKeyDown(key)
+-- 	if key == KEY_K then return VRKeyStates[KEY_K] or false end
+
+-- 	return original_IsKeyDown(key)
+-- end
+
 hook.Add(
 	"VRMod_EnterVehicle",
 	"vrmod_switchactionset",
@@ -30,13 +44,16 @@ hook.Add(
 	"vrutil_hook_defaultinput",
 	function(action, pressed)
 		if hook.Call("VRMod_AllowDefaultAction", nil, action) == false then return end
-		if (action == "boolean_primaryfire" or action == "boolean_turret") and not g_VR.menuFocus then
-			LocalPlayer():ConCommand(pressed and "+attack" or "-attack")
+		if action == "boolean_primaryfire" then
+			if not g_VR.menuFocus then
+				LocalPlayer():ConCommand(pressed and "+attack" or "-attack")
+			end
 
 			return
 		end
 
 		if action == "boolean_secondaryfire" then
+			if cl_lefthand:GetBool() and cl_lefthandfire:GetBool() then return end
 			LocalPlayer():ConCommand(pressed and "+attack2" or "-attack2")
 
 			return
@@ -69,14 +86,16 @@ hook.Add(
 		if action == "boolean_left_pickup" then
 			if cl_pickupdisable:GetBool() then return end
 			vrmod.Pickup(true, not pressed)
-			DropItemsHeldByPlayer(LocalPlayer(), true)
+			-- DropItemsHeldByPlayer(LocalPlayer(), true)
+
 			return
 		end
 
 		if action == "boolean_right_pickup" then
 			if cl_pickupdisable:GetBool() then return end
 			vrmod.Pickup(false, not pressed)
-			DropItemsHeldByPlayer(LocalPlayer(), false)
+			-- DropItemsHeldByPlayer(LocalPlayer(), false)
+
 			return
 		end
 
@@ -246,6 +265,23 @@ hook.Add(
 			return
 		end
 
+		if action == "boolean_invnext" then
+			if pressed then
+				LocalPlayer():ConCommand("invnext")
+			end
+
+			return
+		end
+
+		if action == "boolean_invprev" then
+			if pressed then
+				LocalPlayer():ConCommand("invprev")
+			end
+
+			return
+		end
+
+
 		for i = 1, #g_VR.CustomActions do
 			if action == g_VR.CustomActions[i][1] then
 				local commands = string.Explode(";", g_VR.CustomActions[i][pressed and 2 or 3], false)
@@ -257,7 +293,6 @@ hook.Add(
 		end
 	end
 )
-
 -- VRMod_Input フックを追加し、入力アクションを監視します
 -- hook.Add(
 -- 	"VRMod_Input",
@@ -267,7 +302,6 @@ hook.Add(
 -- 		if action == "boolean_left_pickup" and not pressed then
 -- 			DropItemsHeldByPlayer(LocalPlayer(), true)
 -- 		end
-
 -- 		-- "boolean_right_pickup" アクションが離されたとき
 -- 		if action == "boolean_right_pickup" and not pressed then
 -- 			DropItemsHeldByPlayer(LocalPlayer(), false)

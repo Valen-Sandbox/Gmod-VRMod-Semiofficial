@@ -1,8 +1,8 @@
 
 if CLIENT then
 
-	local convars, convarValues = vrmod.AddCallbackedConvar("vrmod_flashlight_attachment", nil, "0", nil, nil, 0, 2, function(val) return math.floor(tonumber(val) or 0) end)
-
+	local convars, convarValues = vrmod.AddCallbackedConvar("vrmod_flashlight_attachment", nil, "0", FCVAR_ARCHIVE, nil, 0, 2, function(val) return math.floor(tonumber(val) or 0) end)
+	
 	local attachments = {
 		"pose_righthand",
 		"pose_lefthand",
@@ -40,7 +40,7 @@ if CLIENT then
 			flashlight = nil
 		end
 	end)
-
+	
 	hook.Add("VRMod_Exit","flashlight",function(ply, steamid)
 		if ply == LocalPlayer() and flashlight then
 			hook.Remove("VRMod_PreRender","flashlight")
