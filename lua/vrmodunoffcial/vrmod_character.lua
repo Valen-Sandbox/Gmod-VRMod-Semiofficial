@@ -741,7 +741,7 @@ function vrmod_character_lua()
 		return _G[act] or ACT_INVALID, -1
 	end
 
-	local function DoAnimationEventFunc(ply, evt, data)
+	local function DoAnimationEventFunc(ply, evt)
 		if not IsValid(ply) or not activePlayers[ply:SteamID()] or ply:InVehicle() then return end
 		if evt ~= PLAYERANIMEVENT_JUMP then return ACT_INVALID end
 	end
@@ -749,7 +749,7 @@ function vrmod_character_lua()
 	local function SafeResetBoneManipulation(ply, bones_table)
 		if not IsValid(ply) then return end
 		if not bones_table or type(bones_table) ~= "table" then return end
-		for boneName, boneID in pairs(bones_table) do
+		for _, boneID in pairs(bones_table) do
 			if isnumber(boneID) and ply:GetBoneMatrix(boneID) then
 				ply:ManipulateBoneScale(boneID, Vector(1, 1, 1))
 				ply:ManipulateBonePosition(boneID, Vector(0, 0, 0))
@@ -764,7 +764,7 @@ function vrmod_character_lua()
 	end
 
 	function g_VR.StartCharacterSystem(ply)
-		if not IsValid(ply) then return end
+		if SERVER or not IsValid(ply) then return end
 		local steamid = ply:SteamID()
 		if CharacterInit(ply) == false then return end
 		if not g_VR.net or not g_VR.net[steamid] then
